@@ -1,0 +1,81 @@
+const router = require('express').Router();
+const { PrismaClient } = require('@prisma/client');
+const { authStaff } = require('../middleware/auth');
+const prisma = new PrismaClient();
+
+router.get('/admin', authStaff, async (req, res) => {
+  try {
+    const items = await prisma.menuItem.findMany({ where:{ restaurantId: req.restaurantId }, include:{ category:true }, orderBy:[{ category:{ sortOrder:'asc' } }, { sortOrder:'asc' }, { name:'asc' }] });
+    res.json({ success:true, data: items });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.post('/', authStaff, async (req, res) => {
+  try {
+    const { name, description, price, image, isAvailable, prepTime, sortOrder } = req.body;
+    if (!name || !price) return res.status(400).json({ success:false, error:'Name and price required' });
+    const item = await prisma.menuItem.create({ data:{ restaurantId: req.restaurantId, name:name.trim(), description:description?.trim(), price:parseFloat(price), image:image||null, isAvailable:isAvailable!==false&&isAvailable!=='false', prepTime:parseInt(prepTime)||10, sortOrder:parseInt(sortOrder)||0 }, include:{ category:true } });
+    res.json({ success:true, data: item });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.put('/:id', authStaff, async (req, res) => {
+  try {
+    const item = await prisma.menuItem.findFirst({ where:{ id:req.params.id, restaurantId:req.restaurantId } });
+    if (!item) return res.status(404).json({ success:false, error:'Not found' });
+    const { name, description, price, image, isAvailable, prepTime, sortOrder } = req.body;
+    const updated = await prisma.menuItem.update({ where:{ id:req.params.id }, data:{ name, description, price:price?parseFloat(price):undefined, image:image!==undefined?(image||null):undefined, isAvailable:isAvailable!==undefined?(isAvailable!==false&&isAvailable!=='false'):undefined, prepTime:prepTime?parseInt(prepTime):undefined, sortOrder:sortOrder!==undefined?parseInt(sortOrder):undefined }, include:{ category:true } });
+    res.json({ success:true, data: updated });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.patch('/:id/toggle-available', authStaff, async (req, res) => {
+  try {
+    const item = await prisma.menuItem.findFirst({ where:{ id:req.params.id, restaurantId:req.restaurantId } });
+    if (!item) return res.status(404).json({ success:false, error:'Not found' });
+    const updated = await prisma.menuItem.update({ where:{ id:req.params.id }, data:{ isAvailable:!item.isAvailable } });
+    res.json({ success:true, data: updated });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.patch('/:id/toggle-featured', authStaff, async (req, res) => {
+  try {
+    const item = await prisma.menuItem.findFirst({ where:{ id:req.params.id, restaurantId:req.restaurantId } });
+    if (!item) return res.status(404).json({ success:false, error:'Not found' });
+    const updated = await prisma.menuItem.update({ where:{ id:req.params.id }, data:{ isFeatured:!item.isFeatured } });
+    res.json({ success:true, data: updated });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.delete('/:id', authStaff, async (req, res) => {
+  try {
+    const item = await prisma.menuItem.findFirst({ where:{ id:req.params.id, restaurantId:req.restaurantId } });
+    if (!item) return res.status(404).json({ success:false, error:'Not found' });
+    await prisma.menuItem.delete({ where:{ id:req.params.id } });
+    res.json({ success:true, data:null });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.post('/categories', authStaff, async (req, res) => {
+  try {
+    const cat = await prisma.menuCategory.create({ data:{ restaurantId:req.restaurantId, name:req.body.name.trim(), emoji:req.body.emoji||'🍴', sortOrder:parseInt(req.body.sortOrder)||0 } });
+    res.json({ success:true, data:cat });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.put('/categories/:id', authStaff, async (req, res) => {
+  try {
+    const { name, emoji, sortOrder, isVisible } = req.body;
+    await prisma.menuCategory.updateMany({ where:{ id:req.params.id, restaurantId:req.restaurantId }, data:{ name, emoji, sortOrder:parseInt(sortOrder), isVisible } });
+    res.json({ success:true, data:null });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+router.delete('/categories/:id', authStaff, async (req, res) => {
+  try {
+    await prisma.menuCategory.deleteMany({ where:{ id:req.params.id, restaurantId:req.restaurantId } });
+    res.json({ success:true, data:null });
+  } catch(e){ res.status(500).json({ success:false, error:e.message }); }
+});
+
+module.exports = router;
