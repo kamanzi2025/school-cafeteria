@@ -20,6 +20,20 @@ router.put('/:id', async (req, res) => {
   } catch(e){ res.status(500).json({ success:false, error:e.message }); }
 });
 
+router.delete('/:id/guest', async (req, res) => {
+  try {
+    const customer = await prisma.customer.findUnique({ where: { id: req.params.id } });
+    if (!customer) return res.status(404).json({ success: false, error: 'Not found' });
+    if (customer.accountType !== 'guest') return res.status(403).json({ success: false, error: 'Only guest accounts can be deleted this way' });
+
+    await prisma.review.deleteMany({ where: { customerId: req.params.id } });
+    await prisma.order.deleteMany({ where: { customerId: req.params.id } });
+    await prisma.customer.delete({ where: { id: req.params.id } });
+
+    res.json({ success: true });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
 router.post('/:id/favorite/:restaurantId', async (req, res) => {
   try {
     const existing = await prisma.favorite.findUnique({ where:{ customerId_restaurantId:{ customerId:req.params.id, restaurantId:req.params.restaurantId } } });

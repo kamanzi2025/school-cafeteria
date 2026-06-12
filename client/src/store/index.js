@@ -1,23 +1,29 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-// Cart
+// Cart — supports items from multiple restaurants
 export const useCartStore = create(persist((set, get) => ({
-  items: [], restaurantId: null, restaurantName: '', restaurantEmoji: '',
+  items: [],
   addItem: (item, restaurant) => {
-    if (get().restaurantId && get().restaurantId !== restaurant.id) return 'conflict'
     const existing = get().items.find(i => i.id === item.id)
     if (existing) set({ items: get().items.map(i => i.id === item.id ? { ...i, qty: i.qty+1 } : i) })
-    else set({ items: [...get().items, { ...item, qty: 1 }], restaurantId: restaurant.id, restaurantName: restaurant.name, restaurantEmoji: restaurant.emoji || '🍽️' })
+    else set({ items: [...get().items, { ...item, qty: 1, restaurantId: restaurant.id, restaurantName: restaurant.name, restaurantEmoji: restaurant.emoji || '🍽️' }] })
     return 'added'
   },
-  forceAdd: (item, restaurant) => set({ items: [{ ...item, qty:1 }], restaurantId: restaurant.id, restaurantName: restaurant.name, restaurantEmoji: restaurant.emoji || '🍽️' }),
   setQty: (id, qty) => { if (qty < 1) { get().remove(id); return } set({ items: get().items.map(i => i.id===id ? { ...i, qty } : i) }) },
-  remove: (id) => { const items = get().items.filter(i => i.id!==id); set({ items, ...(items.length===0?{ restaurantId:null, restaurantName:'', restaurantEmoji:'' }:{}) }) },
-  clear: () => set({ items:[], restaurantId:null, restaurantName:'', restaurantEmoji:'' }),
+  remove: (id) => set({ items: get().items.filter(i => i.id!==id) }),
+  clear: () => set({ items: [] }),
   subtotal: () => get().items.reduce((s,i) => s+i.price*i.qty, 0),
   count: () => get().items.reduce((s,i) => s+i.qty, 0),
-}), { name: 'cc-cart-v3' }))
+  byRestaurant: () => {
+    const groups = {}
+    for (const item of get().items) {
+      if (!groups[item.restaurantId]) groups[item.restaurantId] = { id: item.restaurantId, name: item.restaurantName, emoji: item.restaurantEmoji, items: [] }
+      groups[item.restaurantId].items.push(item)
+    }
+    return Object.values(groups)
+  },
+}), { name: 'cc-cart-v4' }))
 
 // Customer (registered or guest)
 export const useCustomerStore = create(persist((set) => ({
@@ -26,7 +32,7 @@ export const useCustomerStore = create(persist((set) => ({
   setGuest: (customer, token, guestToken) => set({ customer, token, guestToken }),
   update: (data) => set(s => ({ customer: { ...s.customer, ...data } })),
   logout: () => set({ customer: null, token: null, guestToken: null }),
-}), { name: 'cc-customer-v3' }))
+}), { name: 'cc-customer-v4' }))
 
 // Restaurant Admin (owner or staff)
 export const useAdminStore = create(persist((set) => ({

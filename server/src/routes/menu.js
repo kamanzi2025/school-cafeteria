@@ -3,6 +3,24 @@ const { PrismaClient } = require('@prisma/client');
 const { authStaff } = require('../middleware/auth');
 const prisma = new PrismaClient();
 
+router.get('/search', async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    if (!q) return res.json({ success: true, data: [] });
+    const items = await prisma.menuItem.findMany({
+      where: { isAvailable: true, OR: [{ name: { contains: q } }, { description: { contains: q } }] },
+      select: {
+        id: true, name: true, description: true, price: true, emoji: true, image: true,
+        prepTime: true, isFeatured: true, isVeg: true, isSpicy: true,
+        restaurant: { select: { id: true, name: true, rating: true, ratingCount: true, location: true, floor: true, prepTimeMin: true, prepTimeMax: true, isOpen: true, coverColor: true } }
+      },
+      orderBy: [{ isFeatured: 'desc' }, { totalOrdered: 'desc' }],
+      take: 30
+    });
+    res.json({ success: true, data: items });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
 router.get('/admin', authStaff, async (req, res) => {
   try {
     const items = await prisma.menuItem.findMany({ where:{ restaurantId: req.restaurantId }, include:{ category:true }, orderBy:[{ category:{ sortOrder:'asc' } }, { sortOrder:'asc' }, { name:'asc' }] });

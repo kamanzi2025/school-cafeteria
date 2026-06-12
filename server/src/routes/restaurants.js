@@ -15,6 +15,39 @@ router.get('/', optionalCustomer, async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
+router.get('/search', async (req, res) => {
+  try {
+    const q = (req.query.q || '').trim();
+    if (!q) return res.json({ success: true, data: [] });
+
+    const restaurants = await prisma.restaurant.findMany({
+      where: {
+        isDeleted: false, isApproved: true,
+        OR: [
+          { name: { contains: q } },
+          { description: { contains: q } },
+          { category: { contains: q } },
+          { items: { some: { isAvailable: true, OR: [{ name: { contains: q } }, { description: { contains: q } }] } } }
+        ]
+      },
+      select: {
+        id: true, name: true, slug: true, emoji: true, coverColor: true, category: true,
+        description: true, location: true, floor: true, isOpen: true, isAccepting: true,
+        rating: true, ratingCount: true, prepTimeMin: true, prepTimeMax: true,
+        _count: { select: { orders: true } },
+        items: {
+          where: { isAvailable: true, OR: [{ name: { contains: q } }, { description: { contains: q } }] },
+          select: { id: true, name: true, emoji: true, price: true },
+          take: 4
+        }
+      },
+      orderBy: [{ isOpen: 'desc' }, { rating: 'desc' }]
+    });
+
+    res.json({ success: true, data: restaurants });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
+});
+
 router.get('/admin/me', authStaff, async (req, res) => {
   try {
     const r = await prisma.restaurant.findUnique({

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, LogOut, ShoppingBag, Star, User, Mail, Phone, Hash, UserPlus } from 'lucide-react'
 import { useCustomerStore } from '../../store'
-import { authAPI } from '../../services/api'
+import { authAPI, customerAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 
 export default function CustomerProfilePage() {
@@ -15,7 +15,14 @@ export default function CustomerProfilePage() {
   if (!customer) { navigate('/auth'); return null }
   const isGuest = customer.accountType === 'guest'
 
-  const handleLogout = () => { logout(); navigate('/'); toast.success('Logged out') }
+  const handleLogout = async () => {
+    if (isGuest) {
+      try { await customerAPI.deleteGuest(customer.id) } catch {}
+    }
+    logout()
+    navigate('/')
+    toast.success('Signed out')
+  }
 
   const handleUpgrade = async (e) => {
     e.preventDefault(); setUpgrading(true)

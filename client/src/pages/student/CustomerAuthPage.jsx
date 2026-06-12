@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Mail, Lock, User, Hash, Loader, UserCheck, Ghost, Eye, EyeOff } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Mail, Lock, User, Loader, UserCheck, Ghost, Eye, EyeOff } from 'lucide-react'
 import { authAPI } from '../../services/api'
 import { useCustomerStore } from '../../store'
 import { getGuestToken } from '../../hooks/useGuestToken'
@@ -10,7 +10,7 @@ export default function CustomerAuthPage() {
   const [tab, setTab] = useState('login') // login | register | guest
   const [showPw, setShowPw] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({ name:'', email:'', password:'', studentId:'', phone:'', year:'', department:'' })
+  const [form, setForm] = useState({ name:'', email:'', password:'', phone:'' })
   const [guestName, setGuestName] = useState('')
   const { login, setGuest } = useCustomerStore()
   const navigate = useNavigate()
@@ -54,9 +54,9 @@ export default function CustomerAuthPage() {
   return (
     <div className="min-h-screen bg-ink-50 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        <Link to="/" className="btn btn-ghost btn-sm mb-6 -ml-2 text-ink-500">
+        <button onClick={() => navigate(-1)} className="btn btn-ghost btn-sm mb-6 -ml-2 text-ink-500">
           <ArrowLeft size={15} /> Back
-        </Link>
+        </button>
 
         <div className="text-center mb-6">
           <div className="text-5xl mb-3">🍽️</div>
@@ -66,7 +66,7 @@ export default function CustomerAuthPage() {
 
         {/* Tab switcher */}
         <div className="flex bg-ink-100 rounded-2xl p-1 mb-5">
-          {[['login','Sign In'], ['register','Create Account'], ['guest','Guest']].map(([t, label]) => (
+          {[['login','Sign In'], ['register','Create Account'], ['guest','Sign in as Guest']].map(([t, label]) => (
             <button key={t} onClick={() => setTab(t)}
               className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${tab===t ? 'bg-white text-ink-900 shadow-sm' : 'text-ink-500 hover:text-ink-700'}`}>
               {label}
@@ -124,21 +124,9 @@ export default function CustomerAuthPage() {
                   <label className="label">Password * (min 6 chars)</label>
                   <div className="relative"><Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" /><input type={showPw?'text':'password'} value={form.password} onChange={f('password')} className="input pl-9 pr-10" placeholder="••••••••" required minLength={6} /><button type="button" onClick={() => setShowPw(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400">{showPw?<EyeOff size={14}/>:<Eye size={14}/>}</button></div>
                 </div>
-                <div>
-                  <label className="label">Student ID</label>
-                  <div className="relative"><Hash size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" /><input value={form.studentId} onChange={f('studentId')} className="input pl-9" placeholder="STU001" /></div>
-                </div>
-                <div>
+                <div className="col-span-2">
                   <label className="label">Phone</label>
                   <input value={form.phone} onChange={f('phone')} className="input" placeholder="+250 78..." />
-                </div>
-                <div>
-                  <label className="label">Year</label>
-                  <input value={form.year} onChange={f('year')} className="input" placeholder="Year 2" />
-                </div>
-                <div>
-                  <label className="label">Department</label>
-                  <input value={form.department} onChange={f('department')} className="input" placeholder="CS" />
                 </div>
               </div>
               <button type="submit" disabled={loading} className="btn btn-primary w-full btn-lg mt-1">
@@ -168,9 +156,6 @@ export default function CustomerAuthPage() {
           )}
         </div>
 
-        <div className="mt-4 text-center text-xs text-ink-400">
-          <Link to="/restaurant/auth" className="text-brand-500 font-medium hover:underline">Restaurant owner? Register your restaurant →</Link>
-        </div>
       </div>
     </div>
   )

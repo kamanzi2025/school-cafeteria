@@ -8,7 +8,7 @@ import CartDrawer from '../../components/student/CartDrawer'
 import toast from 'react-hot-toast'
 
 
-function RestaurantCard({ r, index }) {
+function RestaurantCard({ r, index, matchedItems }) {
   return (
     <Link to={`/restaurant/${r.id}`}
       className="card-hover group overflow-hidden flex flex-col animate-fade-up"
@@ -29,7 +29,6 @@ function RestaurantCard({ r, index }) {
             <TrendingUp size={10} /> Popular
           </div>
         )}
-        {/* Colour strip at bottom */}
         <div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: r.coverColor }} />
       </div>
 
@@ -45,6 +44,18 @@ function RestaurantCard({ r, index }) {
           )}
         </div>
         <p className="text-xs text-ink-400 line-clamp-1 mb-3 flex-1">{r.description}</p>
+
+        {/* Matched menu items */}
+        {matchedItems?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {matchedItems.map(item => (
+              <span key={item.id} className="inline-flex items-center gap-1 bg-brand-50 text-brand-700 text-[11px] font-medium px-2 py-0.5 rounded-full border border-brand-100">
+                {item.emoji} {item.name}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center justify-between text-xs text-ink-400">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
@@ -63,9 +74,8 @@ function RestaurantCard({ r, index }) {
 export default function HomePage() {
   const [restaurants, setRestaurants] = useState([])
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const { student } = useCustomerStore()
-  const { count, restaurantName } = useCartStore()
+  const { customer: student } = useCustomerStore()
+  const { count } = useCartStore()
   const { cartOpen, openCart, closeCart } = useUIStore()
   const cartCount = count()
   const navigate = useNavigate()
@@ -81,10 +91,7 @@ export default function HomePage() {
       .catch(() => setLoading(false))
   }, [])
 
-  const filtered = restaurants.filter(r => {
-    const q = search.toLowerCase()
-    return !q || r.name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q)
-  })
+  const displayed = restaurants
 
   return (
     <div className="min-h-screen bg-ink-50">
@@ -99,15 +106,14 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Search */}
-          <div className="flex-1 relative">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400 pointer-events-none" />
-            <input
-              value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Search restaurants or food…"
-              className="input py-2 pl-9 pr-4 text-sm bg-ink-50 border-transparent focus:bg-white"
-            />
-          </div>
+          {/* Search — navigates to dedicated search page */}
+          <button
+            onClick={() => navigate('/search')}
+            className="flex-1 flex items-center gap-2 bg-ink-50 border border-transparent rounded-xl px-3.5 py-2 text-sm text-ink-400 hover:bg-ink-100 transition-colors"
+          >
+            <Search size={15} className="shrink-0" />
+            Search restaurants or meals…
+          </button>
 
           <div className="flex items-center gap-2">
             {student ? (
@@ -143,7 +149,7 @@ export default function HomePage() {
           {cartCount > 0 && (
             <button onClick={openCart} className="mt-5 btn btn-primary">
               <ShoppingBag size={16} />
-              View cart — {restaurantName}
+              View cart ({cartCount} item{cartCount !== 1 ? 's' : ''})
             </button>
           )}
         </div>
@@ -167,18 +173,21 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        ) : filtered.length === 0 ? (
+        ) : displayed.length === 0 ? (
           <div className="py-24 text-center">
-            <p className="text-5xl mb-4">🔍</p>
-            <p className="font-bold text-ink-700 text-lg">No results for "{search}"</p>
-            <p className="text-ink-400 text-sm mt-1">Try searching something else</p>
-            <button onClick={() => setSearch('')} className="btn btn-secondary mt-4">Clear search</button>
+            <p className="text-5xl mb-4">🍽️</p>
+            <p className="font-bold text-ink-700 text-lg">No restaurants available</p>
+            <p className="text-ink-400 text-sm mt-1">Check back soon</p>
           </div>
         ) : (
           <>
-            <p className="text-sm text-ink-400 mb-4">{filtered.length} restaurant{filtered.length !== 1 ? 's' : ''}</p>
+            <p className="text-sm text-ink-400 mb-4">
+              {displayed.length} restaurant{displayed.length !== 1 ? 's' : ''}
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map((r, i) => <RestaurantCard key={r.id} r={r} index={i} />)}
+              {displayed.map((r, i) => (
+                <RestaurantCard key={r.id} r={r} index={i} matchedItems={r.items?.length > 0 ? r.items : null} />
+              ))}
             </div>
           </>
         )}

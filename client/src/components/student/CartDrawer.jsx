@@ -7,7 +7,7 @@ import toast from 'react-hot-toast'
 
 export default function CartDrawer() {
   const { cartOpen, closeCart } = useUIStore()
-  const { items, restaurantId, restaurantName, restaurantEmoji, setQty, remove, clear, subtotal, count } = useCartStore()
+  const { items, setQty, remove, clear, subtotal, count, byRestaurant } = useCartStore()
   const { customer } = useCustomerStore()
   const [notes, setNotes] = useState('')
   const [promoCode, setPromoCode] = useState('')
@@ -24,7 +24,8 @@ export default function CartDrawer() {
     if (!promoCode.trim()) return
     setPromoLoading(true)
     try {
-      const res = await promoAPI.validate({ code: promoCode, restaurantId, subtotal: cartSubtotal })
+      const groups = byRestaurant()
+      const res = await promoAPI.validate({ code: promoCode, restaurantId: groups[0]?.id, subtotal: cartSubtotal })
       setPromoData(res.data.data)
       toast.success(`Promo applied! −${res.data.data.discount.toLocaleString()} RWF`)
     } catch (e) {
@@ -38,22 +39,24 @@ export default function CartDrawer() {
     if (items.length === 0) return
     setPlacing(true)
     try {
-      const res = await orderAPI.place({
-        studentId: customer.studentId,
-        studentName: customer.name,
-        restaurantId,
-        items: items.map(i => ({ menuItemId: i.id, quantity: i.qty })),
-        specialInstructions: notes,
-        paymentMethod: 'cash',
-        promoCode: promoData ? promoCode : undefined
-      })
+      const groups = byRestaurant()
+      const results = await Promise.all(groups.map(group =>
+        orderAPI.place({
+          customerId: customer.id,
+          restaurantId: group.id,
+          items: group.items.map(i => ({ menuItemId: i.id, quantity: i.qty })),
+          specialInstructions: notes,
+          paymentMethod: 'cash',
+          promoCode: promoData ? promoCode : undefined
+        })
+      ))
       clear()
       closeCart()
       setNotes('')
       setPromoCode('')
       setPromoData(null)
-      navigate(`/order/confirm/${res.data.data.id}`)
-      toast.success('Order placed! 🎉')
+      navigate(`/order/confirm/${results[0].data.data.id}`)
+      toast.success(`${results.length > 1 ? `${results.length} orders` : 'Order'} placed! 🎉`)
     } catch (e) {
       toast.error(e.response?.data?.error || 'Could not place order')
     } finally { setPlacing(false) }
@@ -68,7 +71,7 @@ export default function CartDrawer() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-ink-100">
           <div>
             <h2 className="font-bold text-ink-900">Your Order</h2>
-            {restaurantName && <p className="text-xs text-ink-400 mt-0.5">{restaurantEmoji} {restaurantName}</p>}
+            {items.length > 0 && <p className="text-xs text-ink-400 mt-0.5">{byRestaurant().length} restaurant{byRestaurant().length !== 1 ? 's' : ''}</p>}
           </div>
           <button onClick={closeCart} className="btn btn-ghost btn-icon"><X size={18} /></button>
         </div>
@@ -84,23 +87,28 @@ export default function CartDrawer() {
             </div>
           ) : (
             <>
-              {items.map(item => (
-                <div key={item.id} className="flex items-center gap-3 bg-ink-50 rounded-2xl p-3">
-                  <span className="text-2xl">{item.emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-ink-900 truncate">{item.name}</p>
-                    <p className="text-xs text-ink-400">{item.price.toLocaleString()} RWF each</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => setQty(item.id, item.qty - 1)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 flex items-center justify-center text-ink-600 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-colors">
-                      {item.qty === 1 ? <Trash2 size={12} /> : <Minus size={12} />}
-                    </button>
-                    <span className="font-bold text-sm text-ink-900 w-5 text-center">{item.qty}</span>
-                    <button onClick={() => setQty(item.id, item.qty + 1)} className="w-7 h-7 rounded-lg bg-flame-500 flex items-center justify-center text-white hover:bg-flame-600 transition-colors">
-                      <Plus size={12} />
-                    </button>
-                  </div>
-                  <p className="font-bold text-sm text-ink-900 w-20 text-right">{(item.price * item.qty).toLocaleString()}</p>
+              {byRestaurant().map(group => (
+                <div key={group.id}>
+                  <p className="text-xs font-bold text-ink-500 uppercase tracking-wider mb-2">{group.emoji} {group.name}</p>
+                  {group.items.map(item => (
+                    <div key={item.id} className="flex items-center gap-3 bg-ink-50 rounded-2xl p-3 mb-2">
+                      <span className="text-2xl">{item.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-sm text-ink-900 truncate">{item.name}</p>
+                        <p className="text-xs text-ink-400">{item.price.toLocaleString()} RWF each</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => setQty(item.id, item.qty - 1)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 flex items-center justify-center text-ink-600 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-colors">
+                          {item.qty === 1 ? <Trash2 size={12} /> : <Minus size={12} />}
+                        </button>
+                        <span className="font-bold text-sm text-ink-900 w-5 text-center">{item.qty}</span>
+                        <button onClick={() => setQty(item.id, item.qty + 1)} className="w-7 h-7 rounded-lg bg-flame-500 flex items-center justify-center text-white hover:bg-flame-600 transition-colors">
+                          <Plus size={12} />
+                        </button>
+                      </div>
+                      <p className="font-bold text-sm text-ink-900 w-20 text-right">{(item.price * item.qty).toLocaleString()}</p>
+                    </div>
+                  ))}
                 </div>
               ))}
 

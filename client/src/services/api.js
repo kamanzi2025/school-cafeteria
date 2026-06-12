@@ -33,6 +33,7 @@ export const authAPI = {
 
 export const restaurantAPI = {
   list: () => api.get('/restaurants'),
+  search: (q) => api.get('/restaurants/search', { params: { q } }),
   get: (id) => api.get(`/restaurants/${id}`),
   adminGet: () => api.get('/restaurants/admin/me'),
   toggleOpen: () => api.patch('/restaurants/admin/toggle-open'),
@@ -44,6 +45,7 @@ export const restaurantAPI = {
 }
 
 export const menuAPI = {
+  search: (q) => api.get('/menu/search', { params: { q } }),
   list: () => api.get('/menu/admin'),
   create: (d) => api.post('/menu', d),
   update: (id, d) => api.put(`/menu/${id}`, d),
@@ -68,6 +70,7 @@ export const orderAPI = {
 export const customerAPI = {
   get: (id) => api.get(`/customers/${id}`),
   update: (id, d) => api.put(`/customers/${id}`, d),
+  deleteGuest: (id) => api.delete(`/customers/${id}/guest`),
   favorite: (customerId, restaurantId) => api.post(`/customers/${customerId}/favorite/${restaurantId}`),
 }
 

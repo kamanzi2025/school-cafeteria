@@ -12,13 +12,13 @@ export default function OrderHistoryPage() {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('all')
-  const { student } = useCustomerStore()
+  const { customer: student } = useCustomerStore()
   const { forceAdd } = useCartStore()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (!student) { navigate('/auth'); return }
-    orderAPI.studentHistory(student.studentId).then(r => { setOrders(r.data.data); setLoading(false) }).catch(() => setLoading(false))
+    orderAPI.customerHistory(student.id).then(r => { setOrders(r.data.data); setLoading(false) }).catch(() => setLoading(false))
   }, [student])
 
   const handleReorder = (order) => {

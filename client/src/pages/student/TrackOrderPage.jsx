@@ -22,7 +22,7 @@ export default function TrackOrderPage() {
   const [showReview, setShowReview] = useState(false)
   const [review, setReview] = useState({ foodRating: 5, serviceRating: 5, comment: '' })
   const [submitting, setSubmitting] = useState(false)
-  const { student } = useCustomerStore()
+  const { customer: student } = useCustomerStore()
 
   const socket = useSocket({
     'order:updated': (updated) => { if (updated.id === id) { setOrder(updated); toast.success(`Order status: ${updated.status.replace('_', ' ')} 🔔`) } }
@@ -46,7 +46,7 @@ export default function TrackOrderPage() {
   const submitReview = async () => {
     setSubmitting(true)
     try {
-      await reviewAPI.create({ orderId: id, studentId: student.studentId, ...review })
+      await reviewAPI.create({ orderId: id, customerId: student.id, ...review })
       toast.success('Review submitted! 🙏')
       setShowReview(false)
       setOrder(prev => ({ ...prev, review: review }))

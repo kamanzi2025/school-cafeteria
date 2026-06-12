@@ -14,8 +14,8 @@ export default function RestaurantPage() {
   const [activeCategory, setActiveCategory] = useState(null)
   const [search, setSearch] = useState('')
   const [favorited, setFavorited] = useState(false)
-  const { items, addItem, forceAdd, setQty, restaurantId: cartRestaurantId } = useCartStore()
-  const { student } = useCustomerStore()
+  const { items, addItem, setQty } = useCartStore()
+  const { customer: student } = useCustomerStore()
   const { openCart } = useUIStore()
   const cartCount = items.reduce((s, i) => s + i.qty, 0)
 
@@ -33,21 +33,11 @@ export default function RestaurantPage() {
 
   const handleAdd = (item) => {
     if (!student) { toast.error('Sign in to order'); navigate('/auth'); return }
-    const result = addItem(
+    addItem(
       { id: item.id, name: item.name, price: item.price, emoji: item.emoji },
       { id: restaurant.id, name: restaurant.name, emoji: restaurant.emoji }
     )
-    if (result === 'conflict') {
-      if (window.confirm(`Your cart has items from ${useCartStore.getState().restaurantName}. Start a new cart from ${restaurant.name}?`)) {
-        forceAdd(
-          { id: item.id, name: item.name, price: item.price, emoji: item.emoji },
-          { id: restaurant.id, name: restaurant.name, emoji: restaurant.emoji }
-        )
-        toast.success('New cart started!')
-      }
-    } else {
-      toast.success(`${item.name} added!`)
-    }
+    toast.success(`${item.name} added!`)
   }
 
   const categories = restaurant ? [...new Set(restaurant.items.map(i => i.category?.name).filter(Boolean))] : []
@@ -198,9 +188,11 @@ export default function RestaurantPage() {
                   )}
                 </div>
                 <div className="flex flex-col items-center gap-2 justify-between shrink-0">
-                  <div className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl"
+                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0"
                     style={{ background: `${restaurant.coverColor}15` }}>
-                    {item.emoji}
+                    {item.image
+                      ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      : <div className="w-full h-full flex items-center justify-center text-3xl">{item.emoji}</div>}
                   </div>
                   {canOrder ? (
                     qty > 0 ? (
@@ -234,7 +226,7 @@ export default function RestaurantPage() {
       </div>
 
       {/* Cart FAB */}
-      {cartCount > 0 && cartRestaurantId === restaurant.id && (
+      {cartCount > 0 && (
         <div className="fixed bottom-6 inset-x-0 flex justify-center z-20 px-4">
           <button onClick={openCart} className="btn btn-primary btn-lg shadow-glow-lg animate-scale-in">
             <ShoppingBag size={18} />
