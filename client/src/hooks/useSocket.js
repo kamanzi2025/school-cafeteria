@@ -3,7 +3,12 @@ import { io } from 'socket.io-client'
 
 let _socket = null
 export const getSocket = () => {
-  if (!_socket) _socket = io({ path: '/socket.io', transports: ['websocket','polling'] })
+  if (!_socket) {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
+    _socket = backendUrl
+      ? io(backendUrl, { path: '/socket.io', transports: ['websocket', 'polling'] })
+      : io({ path: '/socket.io', transports: ['websocket', 'polling'] })
+  }
   return _socket
 }
 export const useSocket = (events = {}) => {

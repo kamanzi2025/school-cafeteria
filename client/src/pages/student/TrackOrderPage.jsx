@@ -54,14 +54,14 @@ export default function TrackOrderPage() {
     finally { setSubmitting(false) }
   }
 
-  if (!order) return <div className="min-h-screen flex items-center justify-center"><Loader size={24} className="animate-spin text-flame-500" /></div>
+  if (!order) return <div className="min-h-screen flex items-center justify-center bg-alu-bg"><Loader size={24} className="animate-spin text-alu-red" /></div>
 
   const currentIdx = STATUS_IDX[order.status] ?? 0
   const isCancelled = order.status === 'cancelled'
   const isDone = order.status === 'picked_up'
 
   return (
-    <div className="min-h-screen bg-ink-50">
+    <div className="min-h-screen bg-alu-bg">
       {/* Header */}
       <div className="gradient-dark text-white px-4 pt-4 pb-8">
         <div className="max-w-lg mx-auto">
@@ -73,7 +73,7 @@ export default function TrackOrderPage() {
           </div>
           <div className="bg-white/10 rounded-2xl p-4 backdrop-blur-sm">
             <p className="text-white/50 text-xs mb-1">Order Number</p>
-            <p className="font-black text-2xl font-mono text-flame-300">{order.orderNumber}</p>
+            <p className="font-black text-2xl font-mono text-alu-gold">{order.orderNumber}</p>
             <p className="text-white/60 text-sm mt-1">{order.restaurant?.name} · {order.totalPrice.toLocaleString()} RWF</p>
           </div>
         </div>
@@ -85,14 +85,14 @@ export default function TrackOrderPage() {
           {isCancelled ? (
             <div className="text-center py-4">
               <div className="text-4xl mb-2">❌</div>
-              <h2 className="font-bold text-xl text-red-600">Order Cancelled</h2>
-              {order.cancelReason && <p className="text-ink-400 text-sm mt-1">{order.cancelReason}</p>}
+              <h2 className="font-bold text-xl text-red-400">Order Cancelled</h2>
+              {order.cancelReason && <p className="text-alu-muted text-sm mt-1">{order.cancelReason}</p>}
             </div>
           ) : isDone ? (
             <div className="text-center py-4">
               <div className="text-4xl mb-2">🍽️</div>
-              <h2 className="font-bold text-xl text-emerald-600">Picked Up!</h2>
-              <p className="text-ink-400 text-sm">Enjoy your meal!</p>
+              <h2 className="font-bold text-xl text-alu-success-fg">Picked Up!</h2>
+              <p className="text-alu-muted text-sm">Enjoy your meal!</p>
               {!order.review && student && (
                 <button onClick={() => setShowReview(true)} className="btn btn-primary mt-4">
                   <Star size={15} />Leave a Review
@@ -102,9 +102,9 @@ export default function TrackOrderPage() {
           ) : (
             <>
               {order.status === 'ready' && (
-                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4 text-center">
-                  <p className="font-bold text-emerald-700 text-lg">🎉 Ready for pickup!</p>
-                  <p className="text-emerald-600 text-sm">Head to {order.restaurant?.location} now</p>
+                <div className="bg-alu-success/10 border border-alu-success/25 rounded-xl p-4 mb-4 text-center">
+                  <p className="font-bold text-alu-success-fg text-lg">🎉 Ready for pickup!</p>
+                  <p className="text-alu-success-fg/70 text-sm">Head to {order.restaurant?.location} now</p>
                 </div>
               )}
               <div className="space-y-2">
@@ -112,24 +112,24 @@ export default function TrackOrderPage() {
                   const done = i <= currentIdx
                   const current = i === currentIdx
                   return (
-                    <div key={step.key} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${current ? 'bg-flame-50 border border-flame-200' : done ? 'opacity-70' : 'opacity-30'}`}>
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-flame-500' : 'bg-ink-100'}`}>
+                    <div key={step.key} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${current ? 'bg-alu-red/10 border border-alu-red/25' : done ? 'opacity-70' : 'opacity-30'}`}>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${done ? 'bg-alu-red' : 'bg-alu-card'}`}>
                         {done ? <CheckCircle size={18} className="text-white" /> : <span className="text-lg">{step.emoji}</span>}
                       </div>
                       <div className="flex-1">
-                        <p className={`font-semibold text-sm ${current ? 'text-flame-700' : 'text-ink-700'}`}>{step.label}</p>
-                        <p className="text-xs text-ink-400">{step.sub}</p>
+                        <p className={`font-semibold text-sm ${current ? 'text-alu-red' : 'text-alu-cream'}`}>{step.label}</p>
+                        <p className="text-xs text-alu-muted">{step.sub}</p>
                       </div>
-                      {current && <div className="w-2 h-2 bg-flame-500 rounded-full animate-pulse" />}
+                      {current && <div className="w-2 h-2 bg-alu-red rounded-full animate-pulse" />}
                     </div>
                   )
                 })}
               </div>
               {order.estimatedReadyAt && (
-                <div className="mt-3 bg-ink-50 rounded-xl p-3 flex items-center gap-2 text-sm text-ink-600">
-                  <Clock size={15} className="text-flame-500 shrink-0" />
-                  Ready at <strong className="ml-1">{format(new Date(order.estimatedReadyAt), 'HH:mm')}</strong>
-                  <span className="text-ink-400 ml-1">({formatDistanceToNow(new Date(order.estimatedReadyAt), { addSuffix: true })})</span>
+                <div className="mt-3 bg-alu-card rounded-xl p-3 flex items-center gap-2 text-sm text-alu-muted">
+                  <Clock size={15} className="text-alu-red shrink-0" />
+                  Ready at <strong className="ml-1 text-alu-cream">{format(new Date(order.estimatedReadyAt), 'HH:mm')}</strong>
+                  <span className="text-alu-muted ml-1">({formatDistanceToNow(new Date(order.estimatedReadyAt), { addSuffix: true })})</span>
                 </div>
               )}
             </>
@@ -138,15 +138,15 @@ export default function TrackOrderPage() {
 
         {/* Order items */}
         <div className="card p-4 mb-4">
-          <h3 className="font-bold text-ink-900 mb-3">Order Summary</h3>
+          <h3 className="font-bold text-alu-cream mb-3">Order Summary</h3>
           <div className="space-y-1.5">
             {order.items?.map(item => (
               <div key={item.id} className="flex justify-between text-sm">
-                <span className="text-ink-600">{item.quantity}× {item.menuItemName}</span>
-                <span className="font-medium text-ink-900">{item.subtotal.toLocaleString()} RWF</span>
+                <span className="text-alu-muted">{item.quantity}× {item.menuItemName}</span>
+                <span className="font-medium text-alu-cream">{item.subtotal.toLocaleString()} RWF</span>
               </div>
             ))}
-            <div className="flex justify-between font-bold text-ink-900 border-t border-ink-100 pt-2 mt-2">
+            <div className="flex justify-between font-bold text-alu-cream border-t border-alu-border pt-2 mt-2">
               <span>Total</span><span>{order.totalPrice.toLocaleString()} RWF</span>
             </div>
           </div>
@@ -162,12 +162,12 @@ export default function TrackOrderPage() {
 
       {/* Review modal */}
       {showReview && (
-        <div className="fixed inset-0 bg-ink-950/50 z-50 flex items-end md:items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end md:items-center justify-center p-4">
           <div className="card p-6 w-full max-w-sm animate-slide-up">
-            <h3 className="font-bold text-lg text-ink-900 mb-4">How was your order?</h3>
+            <h3 className="font-bold text-lg text-alu-cream mb-4">How was your order?</h3>
             {[['Food', 'foodRating'], ['Service', 'serviceRating']].map(([label, key]) => (
               <div key={key} className="mb-4">
-                <p className="text-sm font-medium text-ink-600 mb-2">{label}</p>
+                <p className="text-sm font-medium text-alu-muted mb-2">{label}</p>
                 <div className="flex gap-2">
                   {[1,2,3,4,5].map(n => (
                     <button key={n} onClick={() => setReview(r => ({ ...r, [key]: n }))}

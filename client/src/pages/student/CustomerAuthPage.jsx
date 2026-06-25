@@ -102,9 +102,6 @@ export default function CustomerAuthPage() {
                 {loading ? <Loader size={16} className="animate-spin" /> : <UserCheck size={16} />}
                 {loading ? 'Signing in…' : 'Sign In'}
               </button>
-              <div className="text-center pt-1">
-                <p className="text-xs text-ink-400">Demo: <code className="bg-ink-100 px-1 rounded">alice@school.ac.rw</code> / <code className="bg-ink-100 px-1 rounded">password123</code></p>
-              </div>
             </form>
           )}
 

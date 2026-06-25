@@ -24,15 +24,14 @@ function clearHistory() {
   localStorage.removeItem(HISTORY_KEY)
 }
 
-// ── Filter tabs ────────────────────────────────────────────────────────────
 function FilterTab({ label, active, onClick }) {
   return (
     <button
       onClick={onClick}
       className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
         active
-          ? 'bg-green-500 text-white shadow-sm'
-          : 'bg-ink-800 text-white/80 hover:bg-ink-700'
+          ? 'bg-alu-red text-white shadow-sm'
+          : 'bg-alu-surface border border-alu-border text-alu-muted hover:text-alu-cream hover:border-alu-muted/50'
       }`}
     >
       {active && <CheckCircle size={13} className="shrink-0" />}
@@ -41,22 +40,21 @@ function FilterTab({ label, active, onClick }) {
   )
 }
 
-// ── Product result card ────────────────────────────────────────────────────
 function ProductCard({ item }) {
   const navigate = useNavigate()
   return (
     <div
       onClick={() => navigate(`/restaurant/${item.restaurant.id}`)}
-      className="flex items-start gap-3 py-4 cursor-pointer hover:bg-ink-50 px-4 -mx-4 transition-colors"
+      className="flex items-start gap-3 py-4 cursor-pointer hover:bg-alu-card px-4 -mx-4 transition-colors"
     >
       <div className="flex-1 min-w-0">
-        <p className="font-bold text-ink-900 text-base leading-snug">{item.name}</p>
+        <p className="font-bold text-alu-cream text-base leading-snug">{item.name}</p>
         {item.description && (
-          <p className="text-sm text-ink-400 mt-0.5 line-clamp-1">{item.description}</p>
+          <p className="text-sm text-alu-muted mt-0.5 line-clamp-1">{item.description}</p>
         )}
-        <p className="font-bold text-ink-900 mt-1">RWF {item.price.toLocaleString()}</p>
-        <p className="text-xs text-ink-500 mt-0.5">Vendor: {item.restaurant.name}</p>
-        <div className="flex items-center gap-3 mt-1.5 text-xs text-ink-400">
+        <p className="font-bold text-alu-cream mt-1">RWF {item.price.toLocaleString()}</p>
+        <p className="text-xs text-alu-muted mt-0.5">Vendor: {item.restaurant.name}</p>
+        <div className="flex items-center gap-3 mt-1.5 text-xs text-alu-muted">
           <span className="flex items-center gap-1">
             <Star size={11} className="fill-amber-400 text-amber-400" />
             {item.restaurant.ratingCount > 0 ? item.restaurant.rating.toFixed(1) : '—'}
@@ -82,13 +80,12 @@ function ProductCard({ item }) {
   )
 }
 
-// ── Merchant result card ───────────────────────────────────────────────────
 function MerchantCard({ r }) {
   const navigate = useNavigate()
   return (
     <div
       onClick={() => navigate(`/restaurant/${r.id}`)}
-      className="flex items-start gap-3 py-4 cursor-pointer hover:bg-ink-50 px-4 -mx-4 transition-colors"
+      className="flex items-start gap-3 py-4 cursor-pointer hover:bg-alu-card px-4 -mx-4 transition-colors"
     >
       <div
         className="w-16 h-16 rounded-xl flex items-center justify-center text-3xl shrink-0"
@@ -98,13 +95,13 @@ function MerchantCard({ r }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="font-bold text-ink-900 text-base leading-snug">{r.name}</p>
-          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${r.isOpen ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}>
+          <p className="font-bold text-alu-cream text-base leading-snug">{r.name}</p>
+          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${r.isOpen ? 'badge-open' : 'badge-closed'}`}>
             {r.isOpen ? 'Open' : 'Closed'}
           </span>
         </div>
-        <p className="text-sm text-ink-400 mt-0.5 line-clamp-1">{r.description}</p>
-        <div className="flex items-center gap-3 mt-1.5 text-xs text-ink-400">
+        <p className="text-sm text-alu-muted mt-0.5 line-clamp-1">{r.description}</p>
+        <div className="flex items-center gap-3 mt-1.5 text-xs text-alu-muted">
           <span className="flex items-center gap-1">
             <Star size={11} className="fill-amber-400 text-amber-400" />
             {r.ratingCount > 0 ? r.rating.toFixed(1) : '—'}
@@ -117,12 +114,11 @@ function MerchantCard({ r }) {
           </span>
         </div>
       </div>
-      <ChevronRight size={16} className="text-ink-300 mt-1 shrink-0" />
+      <ChevronRight size={16} className="text-alu-muted mt-1 shrink-0" />
     </div>
   )
 }
 
-// ── Bottom navigation ──────────────────────────────────────────────────────
 function BottomNav() {
   const navigate = useNavigate()
   const { openCart } = useUIStore()
@@ -136,14 +132,14 @@ function BottomNav() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-ink-100 z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-alu-surface border-t border-alu-border z-40">
       <div className="flex items-center justify-around px-2 py-2 max-w-lg mx-auto">
         {tabs.map(({ label, icon: Icon, action, badge }) => (
-          <button key={label} onClick={action} className="flex flex-col items-center gap-0.5 px-3 py-1 text-ink-400 hover:text-ink-700 transition-colors relative">
+          <button key={label} onClick={action} className="flex flex-col items-center gap-0.5 px-3 py-1 text-alu-muted hover:text-alu-cream transition-colors relative">
             <div className="relative">
               <Icon size={20} />
               {badge && (
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-alu-red text-white text-[9px] font-bold rounded-full flex items-center justify-center">
                   {badge}
                 </span>
               )}
@@ -156,7 +152,6 @@ function BottomNav() {
   )
 }
 
-// ── Main search page ───────────────────────────────────────────────────────
 export default function SearchPage() {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('all')
@@ -216,10 +211,10 @@ export default function SearchPage() {
   const totalCount = shownRestaurants.length + shownProducts.length
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-alu-bg flex flex-col">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-ink-100 px-4 pt-4 pb-3">
-        <h1 className="text-xl font-black text-ink-900 mb-3">Search</h1>
+      <div className="sticky top-0 z-30 bg-alu-surface border-b border-alu-border px-4 pt-4 pb-3">
+        <h1 className="text-xl font-black text-alu-cream mb-3">Search</h1>
 
         {/* Filter tabs */}
         <div className="flex gap-2 mb-3 overflow-x-auto scrollbar-hide pb-0.5">
@@ -230,18 +225,18 @@ export default function SearchPage() {
 
         {/* Search input */}
         <div className="relative">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400 pointer-events-none" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-alu-muted pointer-events-none" />
           <input
             ref={inputRef}
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search for a product"
-            className="w-full bg-ink-50 border border-ink-200 rounded-2xl py-2.5 pl-10 pr-9 text-sm text-ink-900 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400 transition"
+            className="input pl-10 pr-9"
           />
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-700 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-alu-muted hover:text-alu-cream transition-colors"
             >
               <X size={15} />
             </button>
@@ -252,14 +247,14 @@ export default function SearchPage() {
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-4 pb-24">
 
-        {/* ── Empty state: search history ── */}
+        {/* Empty state: search history */}
         {!isSearching && (
           <div className="pt-4">
             {history.length > 0 ? (
               <>
                 <div className="flex items-center justify-between mb-3">
-                  <p className="font-bold text-ink-900 text-sm">Your search history</p>
-                  <button onClick={handleClearHistory} className="text-red-400 hover:text-red-600 transition-colors">
+                  <p className="font-bold text-alu-cream text-sm">Your search history</p>
+                  <button onClick={handleClearHistory} className="text-alu-red hover:text-red-400 transition-colors">
                     <X size={16} />
                   </button>
                 </div>
@@ -268,9 +263,9 @@ export default function SearchPage() {
                     <button
                       key={i}
                       onClick={() => handleHistoryClick(term)}
-                      className="flex items-center gap-2 bg-ink-50 border border-ink-100 rounded-full px-3 py-2 text-sm text-ink-700 hover:bg-ink-100 transition-colors text-left"
+                      className="flex items-center gap-2 bg-alu-surface border border-alu-border rounded-full px-3 py-2 text-sm text-alu-cream hover:bg-alu-card transition-colors text-left"
                     >
-                      <Clock size={13} className="text-ink-400 shrink-0" />
+                      <Clock size={13} className="text-alu-muted shrink-0" />
                       <span className="truncate">{term}</span>
                     </button>
                   ))}
@@ -278,56 +273,53 @@ export default function SearchPage() {
               </>
             ) : (
               <div className="py-16 text-center">
-                <Search size={40} className="text-ink-200 mx-auto mb-3" />
-                <p className="text-ink-400 text-sm">Search for restaurants or meals</p>
+                <Search size={40} className="text-alu-border mx-auto mb-3" />
+                <p className="text-alu-muted text-sm">Search for restaurants or meals</p>
               </div>
             )}
           </div>
         )}
 
-        {/* ── Loading ── */}
+        {/* Loading */}
         {isSearching && loading && (
-          <div className="pt-8 flex flex-col items-center gap-2 text-ink-400">
-            <div className="w-6 h-6 border-2 border-ink-200 border-t-brand-500 rounded-full animate-spin" />
+          <div className="pt-8 flex flex-col items-center gap-2 text-alu-muted">
+            <div className="w-6 h-6 border-2 border-alu-border border-t-alu-red rounded-full animate-spin" />
             <p className="text-sm">Searching…</p>
           </div>
         )}
 
-        {/* ── Results ── */}
+        {/* Results */}
         {isSearching && !loading && (
           <>
-            <p className="text-sm text-ink-500 pt-4 pb-2">
+            <p className="text-sm text-alu-muted pt-4 pb-2">
               {totalCount} result{totalCount !== 1 ? 's' : ''} found
             </p>
 
-            {/* No results */}
             {totalCount === 0 && (
               <div className="py-16 text-center">
                 <p className="text-4xl mb-3">🔍</p>
-                <p className="font-bold text-ink-700">No results for "{query}"</p>
-                <p className="text-ink-400 text-sm mt-1">Try a different term or filter</p>
+                <p className="font-bold text-alu-cream">No results for "{query}"</p>
+                <p className="text-alu-muted text-sm mt-1">Try a different term or filter</p>
               </div>
             )}
 
-            {/* Merchants section */}
             {shownRestaurants.length > 0 && (
               <div>
-                <p className="font-bold text-ink-900 text-sm mb-1">
+                <p className="font-bold text-alu-cream text-sm mb-1">
                   Restaurants ({shownRestaurants.length})
                 </p>
-                <div className="divide-y divide-ink-100">
+                <div className="divide-y divide-alu-border">
                   {shownRestaurants.map(r => <MerchantCard key={r.id} r={r} />)}
                 </div>
               </div>
             )}
 
-            {/* Products section */}
             {shownProducts.length > 0 && (
               <div className={shownRestaurants.length > 0 ? 'mt-4' : ''}>
-                <p className="font-bold text-ink-900 text-sm mb-1">
+                <p className="font-bold text-alu-cream text-sm mb-1">
                   Meals ({shownProducts.length})
                 </p>
-                <div className="divide-y divide-ink-100">
+                <div className="divide-y divide-alu-border">
                   {shownProducts.map(item => <ProductCard key={item.id} item={item} />)}
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Navigate } from 'react-router-dom'
 import { ArrowLeft, LogOut, ShoppingBag, Star, User, Mail, Phone, Hash, UserPlus } from 'lucide-react'
 import { useCustomerStore } from '../../store'
 import { authAPI, customerAPI } from '../../services/api'
@@ -12,7 +12,7 @@ export default function CustomerProfilePage() {
   const [upgradeForm, setUpgradeForm] = useState({ name:'', email:'', password:'' })
   const [upgrading, setUpgrading] = useState(false)
 
-  if (!customer) { navigate('/auth'); return null }
+  if (!customer) return <Navigate to="/auth" replace />
   const isGuest = customer.accountType === 'guest'
 
   const handleLogout = async () => {
@@ -36,40 +36,40 @@ export default function CustomerProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-ink-50">
-      <div className="bg-white border-b border-ink-100 sticky top-0 z-10">
+    <div className="min-h-screen bg-alu-bg">
+      <div className="bg-alu-surface border-b border-alu-border sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="btn btn-ghost btn-icon"><ArrowLeft size={18}/></button>
-          <h1 className="font-bold text-ink-900">My Profile</h1>
+          <h1 className="font-bold text-alu-cream">My Profile</h1>
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
         {/* Avatar */}
         <div className="card p-6 text-center">
-          <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl font-black text-white ${isGuest ? 'bg-ink-400' : 'gradient-brand'}`}>
+          <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl font-black text-white ${isGuest ? 'bg-alu-muted/40' : 'gradient-brand'}`}>
             {isGuest ? '👤' : customer.name[0]}
           </div>
-          <h2 className="font-black text-xl text-ink-900">{customer.name}</h2>
+          <h2 className="font-black text-xl text-alu-cream">{customer.name}</h2>
           {isGuest ? (
-            <span className="badge bg-amber-100 text-amber-700 mt-1">Guest Account</span>
+            <span className="badge-warning mt-1">Guest Account</span>
           ) : (
             <>
-              {customer.email && <p className="text-ink-400 text-sm mt-1">{customer.email}</p>}
-              {customer.studentId && <p className="text-xs text-ink-400">Student ID: {customer.studentId}</p>}
-              {customer.department && <p className="text-xs text-ink-400">{customer.department} · {customer.year}</p>}
+              {customer.email && <p className="text-alu-muted text-sm mt-1">{customer.email}</p>}
+              {customer.studentId && <p className="text-xs text-alu-muted">Student ID: {customer.studentId}</p>}
+              {customer.department && <p className="text-xs text-alu-muted">{customer.department} · {customer.year}</p>}
             </>
           )}
         </div>
 
         {/* Guest upgrade prompt */}
         {isGuest && (
-          <div className="card p-5 border-brand-200 bg-brand-50/50">
+          <div className="card p-5 border-alu-red/20 bg-alu-red/5">
             <div className="flex items-start gap-3">
-              <UserPlus size={20} className="text-brand-500 mt-0.5 shrink-0" />
+              <UserPlus size={20} className="text-alu-red mt-0.5 shrink-0" />
               <div className="flex-1">
-                <p className="font-bold text-ink-900 text-sm">Create a full account</p>
-                <p className="text-xs text-ink-400 mt-0.5">Save your order history, earn points, and access your orders from any device.</p>
+                <p className="font-bold text-alu-cream text-sm">Create a full account</p>
+                <p className="text-xs text-alu-muted mt-0.5">Save your order history, earn points, and access your orders from any device.</p>
                 {!showUpgrade ? (
                   <button onClick={() => setShowUpgrade(true)} className="btn btn-primary btn-sm mt-3">Upgrade Account</button>
                 ) : (
@@ -93,8 +93,8 @@ export default function CustomerProfilePage() {
           <div className="grid grid-cols-3 gap-3">
             {[['Orders', customer.orderCount||0],['RWF Spent', (customer.totalSpent||0).toLocaleString()],['Points', customer.points||0]].map(([l,v]) => (
               <div key={l} className="card p-4 text-center">
-                <p className="font-black text-ink-900 text-lg leading-tight">{v}</p>
-                <p className="text-xs text-ink-400 mt-0.5">{l}</p>
+                <p className="font-black text-alu-cream text-lg leading-tight">{v}</p>
+                <p className="text-xs text-alu-muted mt-0.5">{l}</p>
               </div>
             ))}
           </div>
