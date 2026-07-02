@@ -1,3 +1,9 @@
+databases:
+  - name: cafecampus-db
+    plan: free
+    databaseName: cafecampus
+    user: cafecampus
+
 services:
   - type: web
     name: cafecampus-api
@@ -8,7 +14,9 @@ services:
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
-        value: file:./dev.db
+        fromDatabase:
+          name: cafecampus-db
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
