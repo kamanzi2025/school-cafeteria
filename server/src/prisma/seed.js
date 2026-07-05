@@ -3,6 +3,13 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
+  // Guard: never wipe production data. Only seed a truly empty database.
+  const existing = await prisma.superAdmin.count();
+  if (existing > 0) {
+    console.log('\n✅ Database already contains data — skipping seed to protect production data.\n');
+    return;
+  }
+
   console.log('\n🌱 Seeding CaféCampus v3...\n');
 
   // Clean

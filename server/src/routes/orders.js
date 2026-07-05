@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { PrismaClient } = require('@prisma/client');
-const { authStaff } = require('../middleware/auth');
+const { authStaff, authCustomer, optionalCustomer } = require('../middleware/auth');
 const prisma = new PrismaClient();
 
 const genNum = () => 'CC-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2,5).toUpperCase();
@@ -82,17 +82,21 @@ router.post('/', async (req, res) => {
 });
 
 // ── Get single order ─────────────────────────────────────────────────────────
-router.get('/:id', async (req, res) => {
+// optionalCustomer: guests can still track by order ID (URL-based); authenticated
+// customers are restricted to their own orders.
+router.get('/:id', optionalCustomer, async (req, res) => {
   try {
     const order = await prisma.order.findUnique({ where:{ id:req.params.id }, include:ORDER_INCLUDE });
     if (!order) return res.status(404).json({ success:false, error:'Order not found' });
+    if (req.customer && req.customer.id !== order.customerId) return res.status(403).json({ success:false, error:'Forbidden' });
     res.json({ success:true, data:order });
   } catch(e){ res.status(500).json({ success:false, error:e.message }); }
 });
 
 // ── Customer order history ────────────────────────────────────────────────────
-router.get('/customer/:customerId/history', async (req, res) => {
+router.get('/customer/:customerId/history', authCustomer, async (req, res) => {
   try {
+    if (req.customer.id !== req.params.customerId) return res.status(403).json({ success:false, error:'Forbidden' });
     const orders = await prisma.order.findMany({
       where:{ customerId: req.params.customerId },
       include:{ items:{ include:{ menuItem:{ select:{ name:true, emoji:true } } } }, restaurant:{ select:{ id:true, name:true, emoji:true, coverColor:true } }, review:true },
@@ -151,10 +155,11 @@ router.patch('/:id/status', authStaff, async (req, res) => {
 });
 
 // ── Customer cancel ───────────────────────────────────────────────────────────
-router.patch('/:id/cancel', async (req, res) => {
+router.patch('/:id/cancel', optionalCustomer, async (req, res) => {
   try {
     const order = await prisma.order.findUnique({ where:{ id:req.params.id } });
     if (!order) return res.status(404).json({ success:false, error:'Order not found' });
+    if (req.customer && req.customer.id !== order.customerId) return res.status(403).json({ success:false, error:'Forbidden' });
     if (order.status !== 'pending') return res.status(400).json({ success:false, error:'Can only cancel pending orders' });
     const updated = await prisma.order.update({ where:{ id:req.params.id }, data:{ status:'cancelled', cancelledAt:new Date(), cancelReason:req.body.reason||'Cancelled by customer', cancelledBy:'customer', statusHistory:{ create:[{ status:'cancelled', note:req.body.reason }] } }, include:ORDER_INCLUDE });
     req.app.get('io').to(`restaurant:${order.restaurantId}`).emit('order:cancelled', updated);
