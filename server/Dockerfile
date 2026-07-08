@@ -5,4 +5,4 @@ RUN npm ci --omit=dev
 COPY . .
 RUN npx prisma generate
 EXPOSE 8080
-CMD ["sh", "-c", "npx prisma db push && node src/prisma/seed.js || true && npm start"]
+CMD ["sh", "-c", "npx prisma db push && node src/prisma/seed.js && npm start"]

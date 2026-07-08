@@ -7,6 +7,8 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -33,7 +35,14 @@ app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/superadmin', require('./routes/superadmin'));
 app.use('/api/upload', require('./routes/upload'));
 
-app.get('/api/health', (_, res) => res.json({ ok: true, ts: Date.now() }));
+app.get('/api/health', async (_, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ ok: true, ts: Date.now() });
+  } catch {
+    res.status(503).json({ ok: false, ts: Date.now() });
+  }
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

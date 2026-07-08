@@ -16,7 +16,7 @@ export default function StaffPage() {
   const f = k => e => setForm(p => ({ ...p, [k]: e.target.value }))
 
   useEffect(() => {
-    restaurantAPI.adminGet().then(r => { setStaff(r.data.data.admins || []); setLoading(false) })
+    restaurantAPI.adminGet().then(r => { setStaff(r.data.data.staff || []); setLoading(false) })
   }, [])
 
   const addStaff = async (e) => {

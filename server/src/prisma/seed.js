@@ -3,28 +3,14 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  // Guard: never wipe production data. Only seed a truly empty database.
-  const existing = await prisma.superAdmin.count();
-  if (existing > 0) {
-    console.log('\n✅ Database already contains data — skipping seed to protect production data.\n');
+  // Guard: only seed on a completely empty database
+  const existing = await prisma.superAdmin.findFirst();
+  if (existing) {
+    console.log('\n✅ Database already seeded — skipping.\n');
     return;
   }
 
-  console.log('\n🌱 Seeding CaféCampus v3...\n');
-
-  // Clean
-  await prisma.orderItem.deleteMany();
-  await prisma.orderStatusHistory.deleteMany();
-  await prisma.order.deleteMany();
-  await prisma.review.deleteMany();
-  await prisma.favorite.deleteMany();
-  await prisma.promotion.deleteMany();
-  await prisma.menuItem.deleteMany();
-  await prisma.menuCategory.deleteMany();
-  await prisma.restaurantStaff.deleteMany();
-  await prisma.restaurant.deleteMany();
-  await prisma.customer.deleteMany();
-  await prisma.superAdmin.deleteMany();
+  console.log('\n🌱 Seeding CaféCampus v3 (first run)...\n');
 
   const hash12 = (pw) => bcrypt.hash(pw, 12);
 
