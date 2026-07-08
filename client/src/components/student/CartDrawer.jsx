@@ -64,14 +64,14 @@ export default function CartDrawer() {
 
   return (
     <>
-      {cartOpen && <div className="fixed inset-0 bg-ink-950/50 z-40 backdrop-blur-sm" onClick={closeCart} />}
-      <div className={`fixed right-0 top-0 h-dvh w-full max-w-[420px] bg-white z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+      {cartOpen && <div className="fixed inset-0 bg-black/60 z-40 backdrop-blur-sm" onClick={closeCart} />}
+      <div className={`fixed right-0 top-0 h-dvh w-full max-w-[420px] bg-alu-surface z-50 flex flex-col shadow-2xl transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${cartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-ink-100">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-alu-border">
           <div>
-            <h2 className="font-bold text-ink-900">Your Order</h2>
-            {items.length > 0 && <p className="text-xs text-ink-400 mt-0.5">{byRestaurant().length} restaurant{byRestaurant().length !== 1 ? 's' : ''}</p>}
+            <h2 className="font-bold text-alu-cream">Your Order</h2>
+            {items.length > 0 && <p className="text-xs text-alu-muted mt-0.5">{byRestaurant().length} restaurant{byRestaurant().length !== 1 ? 's' : ''}</p>}
           </div>
           <button onClick={closeCart} className="btn btn-ghost btn-icon"><X size={18} /></button>
         </div>
@@ -80,33 +80,33 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           {items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center py-12">
-              <ShoppingBag size={48} className="text-ink-200 mb-4" />
-              <p className="font-semibold text-ink-400 text-lg">Cart is empty</p>
-              <p className="text-ink-300 text-sm mt-1">Add items from a restaurant to begin</p>
+              <ShoppingBag size={48} className="text-alu-border mb-4" />
+              <p className="font-semibold text-alu-muted text-lg">Cart is empty</p>
+              <p className="text-alu-muted/60 text-sm mt-1">Add items from a restaurant to begin</p>
               <button onClick={closeCart} className="btn btn-secondary mt-5">Browse Restaurants</button>
             </div>
           ) : (
             <>
               {byRestaurant().map(group => (
                 <div key={group.id}>
-                  <p className="text-xs font-bold text-ink-500 uppercase tracking-wider mb-2">{group.emoji} {group.name}</p>
+                  <p className="text-xs font-bold text-alu-muted uppercase tracking-wider mb-2">{group.emoji} {group.name}</p>
                   {group.items.map(item => (
-                    <div key={item.id} className="flex items-center gap-3 bg-ink-50 rounded-2xl p-3 mb-2">
+                    <div key={item.id} className="flex items-center gap-3 bg-alu-card rounded-2xl p-3 mb-2">
                       <span className="text-2xl">{item.emoji}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm text-ink-900 truncate">{item.name}</p>
-                        <p className="text-xs text-ink-400">{item.price.toLocaleString()} RWF each</p>
+                        <p className="font-semibold text-sm text-alu-cream truncate">{item.name}</p>
+                        <p className="text-xs text-alu-muted">{item.price.toLocaleString()} RWF each</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setQty(item.id, item.qty - 1)} className="w-7 h-7 rounded-lg bg-white border border-ink-200 flex items-center justify-center text-ink-600 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-colors">
+                        <button onClick={() => setQty(item.id, item.qty - 1)} className="w-7 h-7 rounded-lg bg-alu-card border border-alu-border flex items-center justify-center text-alu-cream hover:bg-alu-red/10 hover:border-alu-red/30 hover:text-alu-red transition-colors">
                           {item.qty === 1 ? <Trash2 size={12} /> : <Minus size={12} />}
                         </button>
-                        <span className="font-bold text-sm text-ink-900 w-5 text-center">{item.qty}</span>
+                        <span className="font-bold text-sm text-alu-cream w-5 text-center">{item.qty}</span>
                         <button onClick={() => setQty(item.id, item.qty + 1)} className="w-7 h-7 rounded-lg bg-flame-500 flex items-center justify-center text-white hover:bg-flame-600 transition-colors">
                           <Plus size={12} />
                         </button>
                       </div>
-                      <p className="font-bold text-sm text-ink-900 w-20 text-right">{(item.price * item.qty).toLocaleString()}</p>
+                      <p className="font-bold text-sm text-alu-cream w-20 text-right">{(item.price * item.qty).toLocaleString()}</p>
                     </div>
                   ))}
                 </div>
@@ -132,7 +132,7 @@ export default function CartDrawer() {
                   </button>
                 </div>
                 {promoData && (
-                  <div className="mt-2 flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 rounded-lg px-3 py-2">
+                  <div className="mt-2 flex items-center gap-2 text-xs text-alu-success-fg bg-alu-success/10 rounded-lg px-3 py-2">
                     <Tag size={12} /> {promoData.promo.title} — −{discount.toLocaleString()} RWF
                   </div>
                 )}
@@ -143,24 +143,24 @@ export default function CartDrawer() {
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t border-ink-100 px-5 py-5 space-y-4">
+          <div className="border-t border-alu-border px-5 py-5 space-y-4">
             {/* Price breakdown */}
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-ink-500">
+              <div className="flex justify-between text-alu-muted">
                 <span>Subtotal ({count()} items)</span>
                 <span>{cartSubtotal.toLocaleString()} RWF</span>
               </div>
               {discount > 0 && (
-                <div className="flex justify-between text-emerald-600">
+                <div className="flex justify-between text-alu-success-fg">
                   <span>Discount</span>
                   <span>−{discount.toLocaleString()} RWF</span>
                 </div>
               )}
-              <div className="flex justify-between font-bold text-ink-900 text-base pt-1 border-t border-ink-100">
+              <div className="flex justify-between font-bold text-alu-cream text-base pt-1 border-t border-alu-border">
                 <span>Total</span>
                 <span>{total.toLocaleString()} RWF</span>
               </div>
-              <p className="text-xs text-ink-400 text-center">💵 Pay cash at pickup counter</p>
+              <p className="text-xs text-alu-muted text-center">💵 Pay cash at pickup counter</p>
             </div>
 
             <button onClick={placeOrder} disabled={placing}
@@ -169,7 +169,7 @@ export default function CartDrawer() {
               {placing ? 'Placing order…' : 'Place Order'}
               {!placing && <ChevronRight size={18} />}
             </button>
-            <button onClick={clear} className="w-full text-xs text-ink-400 hover:text-red-400 transition-colors text-center">
+            <button onClick={clear} className="w-full text-xs text-alu-muted hover:text-alu-red transition-colors text-center">
               Clear cart
             </button>
           </div>

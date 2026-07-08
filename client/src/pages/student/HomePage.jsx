@@ -35,28 +35,28 @@ function RestaurantCard({ r, index, matchedItems }) {
       {/* Info */}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-bold text-ink-900 text-sm leading-snug">{r.name}</h3>
+          <h3 className="font-bold text-alu-cream text-sm leading-snug">{r.name}</h3>
           {r.ratingCount > 0 && (
-            <div className="flex items-center gap-0.5 shrink-0 text-xs text-ink-500">
+            <div className="flex items-center gap-0.5 shrink-0 text-xs text-alu-muted">
               <Star size={11} className="fill-amber-400 text-amber-400" />
-              <span className="font-semibold text-ink-800">{r.rating}</span>
+              <span className="font-semibold text-alu-cream">{r.rating}</span>
             </div>
           )}
         </div>
-        <p className="text-xs text-ink-400 line-clamp-1 mb-3 flex-1">{r.description}</p>
+        <p className="text-xs text-alu-muted line-clamp-1 mb-3 flex-1">{r.description}</p>
 
         {/* Matched menu items */}
         {matchedItems?.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {matchedItems.map(item => (
-              <span key={item.id} className="inline-flex items-center gap-1 bg-brand-50 text-brand-700 text-[11px] font-medium px-2 py-0.5 rounded-full border border-brand-100">
+              <span key={item.id} className="inline-flex items-center gap-1 bg-alu-red/10 text-alu-red text-[11px] font-medium px-2 py-0.5 rounded-full border border-alu-red/20">
                 {item.emoji} {item.name}
               </span>
             ))}
           </div>
         )}
 
-        <div className="flex items-center justify-between text-xs text-ink-400">
+        <div className="flex items-center justify-between text-xs text-alu-muted">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
               <Clock size={11} /> {r.prepTimeMin}–{r.prepTimeMax} min
@@ -94,22 +94,22 @@ export default function HomePage() {
   const displayed = restaurants
 
   return (
-    <div className="min-h-screen bg-ink-50">
+    <div className="min-h-screen bg-alu-bg">
       {/* Top nav */}
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-ink-100">
+      <header className="sticky top-0 z-30 bg-alu-surface/95 backdrop-blur-xl border-b border-alu-border">
         <div className="page-container py-3 flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 mr-2">
             <span className="text-2xl">🍽️</span>
             <div>
-              <p className="font-bold text-ink-900 leading-none text-base">CaféCampus</p>
-              <p className="text-[10px] text-ink-400 leading-none">School Cafeteria</p>
+              <p className="font-bold text-alu-cream leading-none text-base">CaféCampus</p>
+              <p className="text-[10px] text-alu-muted leading-none">School Cafeteria</p>
             </div>
           </Link>
 
           {/* Search — navigates to dedicated search page */}
           <button
             onClick={() => navigate('/search')}
-            className="flex-1 flex items-center gap-2 bg-ink-50 border border-transparent rounded-xl px-3.5 py-2 text-sm text-ink-400 hover:bg-ink-100 transition-colors"
+            className="flex-1 flex items-center gap-2 bg-alu-card border border-alu-border rounded-xl px-3.5 py-2 text-sm text-alu-muted hover:bg-alu-border transition-colors"
           >
             <Search size={15} className="shrink-0" />
             Search restaurants or meals…
@@ -137,13 +137,13 @@ export default function HomePage() {
 
       {/* Hero banner */}
       <div className="relative overflow-hidden gradient-dark text-white">
-        <div className="absolute inset-0 dot-pattern opacity-20" />
+        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
         <div className="page-container py-10 relative z-10">
           <h1 className="text-4xl md:text-5xl font-black leading-tight mb-2">
             Skip the line,<br />
             <span className="text-gradient">order ahead.</span> 🍽️
           </h1>
-          <p className="text-ink-400 text-sm max-w-md">
+          <p className="text-alu-muted text-sm max-w-md">
             Fresh campus food, real-time tracking, ready for pickup in minutes.
           </p>
           {cartCount > 0 && (
@@ -153,17 +153,16 @@ export default function HomePage() {
             </button>
           )}
         </div>
-        {/* Decorative blobs */}
+        {/* Decorative blob */}
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-10" style={{ background: '#ff5c1a' }} />
       </div>
-
 
       {/* Restaurant grid */}
       <main className="page-container py-6 pb-16">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array(6).fill(0).map((_, i) => (
-              <div key={i} className="rounded-2xl overflow-hidden border border-ink-100">
+              <div key={i} className="rounded-2xl overflow-hidden border border-alu-border">
                 <div className="skeleton h-36" />
                 <div className="p-4 space-y-2">
                   <div className="skeleton h-4 w-3/4" />
@@ -176,12 +175,12 @@ export default function HomePage() {
         ) : displayed.length === 0 ? (
           <div className="py-24 text-center">
             <p className="text-5xl mb-4">🍽️</p>
-            <p className="font-bold text-ink-700 text-lg">No restaurants available</p>
-            <p className="text-ink-400 text-sm mt-1">Check back soon</p>
+            <p className="font-bold text-alu-cream text-lg">No restaurants available</p>
+            <p className="text-alu-muted text-sm mt-1">Check back soon</p>
           </div>
         ) : (
           <>
-            <p className="text-sm text-ink-400 mb-4">
+            <p className="text-sm text-alu-muted mb-4">
               {displayed.length} restaurant{displayed.length !== 1 ? 's' : ''}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
