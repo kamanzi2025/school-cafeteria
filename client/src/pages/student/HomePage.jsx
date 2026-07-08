@@ -49,7 +49,7 @@ function RestaurantCard({ r, index, matchedItems }) {
         {matchedItems?.length > 0 && (
           <div className="flex flex-wrap gap-1 mb-3">
             {matchedItems.map(item => (
-              <span key={item.id} className="inline-flex items-center gap-1 bg-alu-red/10 text-alu-red text-[11px] font-medium px-2 py-0.5 rounded-full border border-alu-red/20">
+              <span key={item.id} className="inline-flex items-center gap-1 bg-brand-50 text-brand-700 text-[11px] font-medium px-2 py-0.5 rounded-full border border-brand-100">
                 {item.emoji} {item.name}
               </span>
             ))}
@@ -96,7 +96,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-alu-bg">
       {/* Top nav */}
-      <header className="sticky top-0 z-30 bg-alu-surface/95 backdrop-blur-xl border-b border-alu-border">
+      <header className="sticky top-0 z-30 bg-alu-surface/90 backdrop-blur-xl border-b border-alu-border">
         <div className="page-container py-3 flex items-center gap-3">
           <Link to="/" className="flex items-center gap-2 mr-2">
             <span className="text-2xl">🍽️</span>
@@ -109,7 +109,7 @@ export default function HomePage() {
           {/* Search — navigates to dedicated search page */}
           <button
             onClick={() => navigate('/search')}
-            className="flex-1 flex items-center gap-2 bg-alu-card border border-alu-border rounded-xl px-3.5 py-2 text-sm text-alu-muted hover:bg-alu-border transition-colors"
+            className="flex-1 flex items-center gap-2 bg-alu-card border border-alu-border rounded-xl px-3.5 py-2 text-sm text-alu-muted hover:bg-alu-surface transition-colors"
           >
             <Search size={15} className="shrink-0" />
             Search restaurants or meals…
@@ -137,7 +137,7 @@ export default function HomePage() {
 
       {/* Hero banner */}
       <div className="relative overflow-hidden gradient-dark text-white">
-        <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+        <div className="absolute inset-0 dot-pattern opacity-20" />
         <div className="page-container py-10 relative z-10">
           <h1 className="text-4xl md:text-5xl font-black leading-tight mb-2">
             Skip the line,<br />
@@ -153,9 +153,10 @@ export default function HomePage() {
             </button>
           )}
         </div>
-        {/* Decorative blob */}
+        {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-10" style={{ background: '#ff5c1a' }} />
       </div>
+
 
       {/* Restaurant grid */}
       <main className="page-container py-6 pb-16">

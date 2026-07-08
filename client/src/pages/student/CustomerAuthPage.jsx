@@ -66,9 +66,9 @@ export default function CustomerAuthPage() {
 
         {/* Tab switcher */}
         <div className="flex bg-alu-card rounded-2xl p-1 mb-5">
-          {[['login','Sign In'], ['register','Create Account'], ['guest','Continue as Guest']].map(([t, label]) => (
+          {[['login','Sign In'], ['register','Create Account'], ['guest','Sign in as Guest']].map(([t, label]) => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all ${tab===t ? 'bg-alu-surface text-alu-cream shadow-sm' : 'text-alu-muted hover:text-alu-cream'}`}>
+              className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${tab===t ? 'bg-alu-surface text-alu-cream shadow-sm' : 'text-alu-muted hover:text-alu-cream'}`}>
               {label}
             </button>
           ))}
@@ -95,7 +95,7 @@ export default function CustomerAuthPage() {
                 <div className="relative">
                   <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-alu-muted" />
                   <input type={showPw?'text':'password'} value={form.password} onChange={f('password')} className="input pl-9 pr-10" placeholder="••••••••" required />
-                  <button type="button" onClick={() => setShowPw(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-alu-muted">{showPw?<EyeOff size={14}/>:<Eye size={14}/>}</button>
+                  <button type="button" onClick={() => setShowPw(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400">{showPw?<EyeOff size={14}/>:<Eye size={14}/>}</button>
                 </div>
               </div>
               <button type="submit" disabled={loading} className="btn btn-primary w-full btn-lg mt-1">
@@ -119,7 +119,7 @@ export default function CustomerAuthPage() {
                 </div>
                 <div className="col-span-2">
                   <label className="label">Password * (min 6 chars)</label>
-                  <div className="relative"><Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-alu-muted" /><input type={showPw?'text':'password'} value={form.password} onChange={f('password')} className="input pl-9 pr-10" placeholder="••••••••" required minLength={6} /><button type="button" onClick={() => setShowPw(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-alu-muted">{showPw?<EyeOff size={14}/>:<Eye size={14}/>}</button></div>
+                  <div className="relative"><Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-alu-muted" /><input type={showPw?'text':'password'} value={form.password} onChange={f('password')} className="input pl-9 pr-10" placeholder="••••••••" required minLength={6} /><button type="button" onClick={() => setShowPw(s=>!s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400">{showPw?<EyeOff size={14}/>:<Eye size={14}/>}</button></div>
                 </div>
                 <div className="col-span-2">
                   <label className="label">Phone</label>
@@ -136,9 +136,9 @@ export default function CustomerAuthPage() {
           {/* ── GUEST ── */}
           {tab === 'guest' && (
             <div className="space-y-4">
-              <div className="bg-alu-gold/10 border border-alu-gold/25 rounded-xl p-3 text-sm text-alu-gold">
+              <div className="bg-amber-900/20 border border-amber-500/30 rounded-xl p-3 text-sm text-amber-300">
                 <p className="font-semibold mb-1">👤 Order as a Guest</p>
-                <p className="text-xs text-alu-gold/80">No account needed. Your order history will be saved on this device only.</p>
+                <p className="text-xs">No account needed. Your order history will be saved on this device only.</p>
               </div>
               <div>
                 <label className="label">Your Name (optional)</label>

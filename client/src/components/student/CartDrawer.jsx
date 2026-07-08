@@ -82,7 +82,7 @@ export default function CartDrawer() {
             <div className="h-full flex flex-col items-center justify-center text-center py-12">
               <ShoppingBag size={48} className="text-alu-border mb-4" />
               <p className="font-semibold text-alu-muted text-lg">Cart is empty</p>
-              <p className="text-alu-muted/60 text-sm mt-1">Add items from a restaurant to begin</p>
+              <p className="text-alu-muted text-sm mt-1">Add items from a restaurant to begin</p>
               <button onClick={closeCart} className="btn btn-secondary mt-5">Browse Restaurants</button>
             </div>
           ) : (
@@ -98,7 +98,7 @@ export default function CartDrawer() {
                         <p className="text-xs text-alu-muted">{item.price.toLocaleString()} RWF each</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setQty(item.id, item.qty - 1)} className="w-7 h-7 rounded-lg bg-alu-card border border-alu-border flex items-center justify-center text-alu-cream hover:bg-alu-red/10 hover:border-alu-red/30 hover:text-alu-red transition-colors">
+                        <button onClick={() => setQty(item.id, item.qty - 1)} className="w-7 h-7 rounded-lg bg-alu-bg border border-alu-border flex items-center justify-center text-alu-muted hover:border-red-500/40 hover:text-red-400 transition-colors">
                           {item.qty === 1 ? <Trash2 size={12} /> : <Minus size={12} />}
                         </button>
                         <span className="font-bold text-sm text-alu-cream w-5 text-center">{item.qty}</span>
@@ -132,7 +132,7 @@ export default function CartDrawer() {
                   </button>
                 </div>
                 {promoData && (
-                  <div className="mt-2 flex items-center gap-2 text-xs text-alu-success-fg bg-alu-success/10 rounded-lg px-3 py-2">
+                  <div className="mt-2 flex items-center gap-2 text-xs text-emerald-400 bg-emerald-900/20 border border-emerald-500/20 rounded-lg px-3 py-2">
                     <Tag size={12} /> {promoData.promo.title} — −{discount.toLocaleString()} RWF
                   </div>
                 )}
@@ -151,7 +151,7 @@ export default function CartDrawer() {
                 <span>{cartSubtotal.toLocaleString()} RWF</span>
               </div>
               {discount > 0 && (
-                <div className="flex justify-between text-alu-success-fg">
+                <div className="flex justify-between text-emerald-400">
                   <span>Discount</span>
                   <span>−{discount.toLocaleString()} RWF</span>
                 </div>
@@ -169,7 +169,7 @@ export default function CartDrawer() {
               {placing ? 'Placing order…' : 'Place Order'}
               {!placing && <ChevronRight size={18} />}
             </button>
-            <button onClick={clear} className="w-full text-xs text-alu-muted hover:text-alu-red transition-colors text-center">
+            <button onClick={clear} className="w-full text-xs text-alu-muted hover:text-red-400 transition-colors text-center">
               Clear cart
             </button>
           </div>
