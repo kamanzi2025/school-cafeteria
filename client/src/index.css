@@ -50,41 +50,14 @@
   .scrollbar-hide::-webkit-scrollbar { display:none; }
 }
 
-/* Restaurant admin — light theme overrides */
-[data-admin] .card,
-[data-admin] .card-hover {
-  background-color: #ffffff;
-  border-color: #eeeef0;
-}
-[data-admin] .card-hover:hover {
-  border-color: #d9d9de;
-}
-[data-admin] .input {
-  background-color: #ffffff;
-  border-color: #d9d9de;
-  color: #1a1a20;
-}
-[data-admin] .input::placeholder { color: #90909c; }
-[data-admin] .input:focus {
-  border-color: #6e6e7a;
-  box-shadow: 0 0 0 2px rgba(110,110,122,0.15);
-}
-[data-admin] .label { color: #6e6e7a; }
-[data-admin] .btn-secondary {
-  background-color: #ffffff;
-  color: #4a4a53;
-  border-color: #d9d9de;
-}
-[data-admin] .btn-secondary:hover { background-color: #f7f7f8; }
-[data-admin] .btn-ghost { color: #6e6e7a; }
-[data-admin] .btn-ghost:hover { background-color: #eeeef0; color: #4a4a53; }
-[data-admin] .btn-danger {
-  background-color: rgba(220,38,38,0.08);
-  color: #dc2626;
-  border-color: rgba(220,38,38,0.2);
-}
-[data-admin] .btn-danger:hover { background-color: rgba(220,38,38,0.14); }
-[data-admin] .skeleton {
-  background: linear-gradient(to right, #eeeef0, #f7f7f8, #eeeef0);
-  background-size: 200% 100%;
+@layer utilities {
+  /* Restaurant admin — force light theme on shared dark classes */
+  [data-admin] .card { @apply bg-white border-ink-200; }
+  [data-admin] .card-hover { @apply bg-white border-ink-200 hover:border-ink-300; }
+  [data-admin] .input { @apply bg-white border-ink-200 text-ink-900 placeholder-ink-400 focus:ring-ink-400/20 focus:border-ink-500; }
+  [data-admin] .label { @apply text-ink-500; }
+  [data-admin] .btn-secondary { @apply bg-white text-ink-700 border-ink-200 hover:bg-ink-50; }
+  [data-admin] .btn-ghost { @apply text-ink-500 hover:bg-ink-100 hover:text-ink-700; }
+  [data-admin] .btn-danger { @apply bg-red-50 text-red-600 border-red-200 hover:bg-red-100; }
+  [data-admin] .skeleton { @apply from-ink-100 via-ink-50 to-ink-100; }
 }
