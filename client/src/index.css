@@ -49,3 +49,42 @@
   .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
   .scrollbar-hide::-webkit-scrollbar { display:none; }
 }
+
+/* Restaurant admin — light theme overrides */
+[data-admin] .card,
+[data-admin] .card-hover {
+  background-color: #ffffff;
+  border-color: #eeeef0;
+}
+[data-admin] .card-hover:hover {
+  border-color: #d9d9de;
+}
+[data-admin] .input {
+  background-color: #ffffff;
+  border-color: #d9d9de;
+  color: #1a1a20;
+}
+[data-admin] .input::placeholder { color: #90909c; }
+[data-admin] .input:focus {
+  border-color: #6e6e7a;
+  box-shadow: 0 0 0 2px rgba(110,110,122,0.15);
+}
+[data-admin] .label { color: #6e6e7a; }
+[data-admin] .btn-secondary {
+  background-color: #ffffff;
+  color: #4a4a53;
+  border-color: #d9d9de;
+}
+[data-admin] .btn-secondary:hover { background-color: #f7f7f8; }
+[data-admin] .btn-ghost { color: #6e6e7a; }
+[data-admin] .btn-ghost:hover { background-color: #eeeef0; color: #4a4a53; }
+[data-admin] .btn-danger {
+  background-color: rgba(220,38,38,0.08);
+  color: #dc2626;
+  border-color: rgba(220,38,38,0.2);
+}
+[data-admin] .btn-danger:hover { background-color: rgba(220,38,38,0.14); }
+[data-admin] .skeleton {
+  background: linear-gradient(to right, #eeeef0, #f7f7f8, #eeeef0);
+  background-size: 200% 100%;
+}
