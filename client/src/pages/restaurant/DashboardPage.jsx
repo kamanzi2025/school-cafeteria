@@ -178,15 +178,14 @@ export default function DashboardPage() {
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
           {[
-            { label: "Today's Orders", val: todayOrders.length, sub: 'not cancelled' },
-            { label: "Today's Revenue", val: `${revenue.toLocaleString()} RWF`, sub: 'total' },
-            { label: 'Pending', val: newCount, sub: 'need action', alert: newCount > 0 },
-            { label: 'In Progress', val: orders.filter(o => ['confirmed', 'preparing'].includes(o.status)).length, sub: 'being prepared' },
+            { label: "Today's Orders", val: todayOrders.length },
+            { label: "Today's Revenue", val: `${revenue.toLocaleString()} RWF` },
+            { label: 'Pending', val: newCount, alert: newCount > 0 },
+            { label: 'In Progress', val: orders.filter(o => ['confirmed', 'preparing'].includes(o.status)).length },
           ].map(s => (
             <div key={s.label} className={`card p-4 ${s.alert && s.val > 0 ? 'border-amber-300 bg-amber-50' : ''}`}>
               <p className="text-xs text-ink-400 mb-1">{s.label}</p>
               <p className={`font-black text-xl ${s.alert && s.val > 0 ? 'text-amber-600' : 'text-ink-900'}`}>{s.val}</p>
-              <p className="text-xs text-ink-300 mt-0.5">{s.sub}</p>
             </div>
           ))}
         </div>
