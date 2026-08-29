@@ -4,11 +4,13 @@ services:
     env: node
     plan: free
     rootDir: server
-    buildCommand: npm install && npx prisma generate && npx prisma db push && node src/prisma/seed.js
+    buildCommand: npm install && npx prisma generate && npx prisma db push
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
-        value: file:./dev.db
+        sync: false
+      - key: DIRECT_URL
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN

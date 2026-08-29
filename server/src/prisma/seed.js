@@ -1,6 +1,12 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const prisma = new PrismaClient();
+
+const randomPassword = () => crypto.randomBytes(9).toString('base64url');
+const SUPERADMIN_PASSWORD = process.env.SEED_SUPERADMIN_PASSWORD || randomPassword();
+const RESTAURANT_PASSWORD = process.env.SEED_RESTAURANT_PASSWORD || randomPassword();
+const CUSTOMER_PASSWORD = process.env.SEED_CUSTOMER_PASSWORD || randomPassword();
 
 async function main() {
   console.log('\n🌱 Seeding CaféCampus v3...\n');
@@ -22,8 +28,8 @@ async function main() {
   const hash12 = (pw) => bcrypt.hash(pw, 12);
 
   // ── Super Admin ────────────────────────────────────────────
-  await prisma.superAdmin.create({ data: { username: 'superadmin', passwordHash: await hash12('super123') } });
-  console.log('✅ Super Admin: username=superadmin, password=super123');
+  await prisma.superAdmin.create({ data: { username: 'superadmin', passwordHash: await hash12(SUPERADMIN_PASSWORD) } });
+  console.log(`✅ Super Admin: username=superadmin, password=${SUPERADMIN_PASSWORD}`);
 
   // ── Demo Restaurants (pre-registered so app works out of box) ─
   const restaurants = [
@@ -36,7 +42,7 @@ async function main() {
     { ownerName:'Raj Patel', ownerEmail:'raj@spiceroute.rw', name:'Spice Route', slug:'spice-route', emoji:'🍛', coverColor:'#b45309', category:'Indian', description:'Slow-cooked curries, fragrant biryanis and fresh naan from the tandoor.', location:'West Wing', floor:'Second Floor', phone:'+250 78 100 0007', prepTimeMin:15, prepTimeMax:25, openTime:'09:00', closeTime:'18:00', isOpen:true },
   ];
 
-  const pw = await hash12('admin123');
+  const pw = await hash12(RESTAURANT_PASSWORD);
   for (const r of restaurants) {
     const restaurant = await prisma.restaurant.create({ data: { ...r, passwordHash: pw, isApproved: true } });
 
@@ -127,7 +133,7 @@ async function main() {
     const slug = r.slug.split('-')[0].toUpperCase();
     await prisma.promotion.create({ data: { restaurantId:restaurant.id, code:`${slug}10`, title:'10% Off Welcome', type:'percentage', value:10, minOrder:2000, maxDiscount:1000, validFrom:new Date(), validUntil:new Date(Date.now()+90*86400000) } });
 
-    console.log(`  ✅ ${r.name} — login: ${r.ownerEmail} / admin123`);
+    console.log(`  ✅ ${r.name} — login: ${r.ownerEmail} / ${RESTAURANT_PASSWORD}`);
   }
 
   // ── Demo Customers ─────────────────────────────────────────
@@ -135,20 +141,20 @@ async function main() {
     { accountType:'registered', name:'Alice Uwimana', email:'alice@school.ac.rw', studentId:'STU001', year:'Year 3', department:'Computer Science' },
     { accountType:'registered', name:'Bob Nkurunziza', email:'bob@school.ac.rw', studentId:'STU002', year:'Year 2', department:'Business' },
   ];
-  const custPw = await hash12('password123');
+  const custPw = await hash12(CUSTOMER_PASSWORD);
   for (const c of customers) {
     await prisma.customer.create({ data: { ...c, passwordHash:custPw } });
-    console.log(`  👤 Customer: ${c.name} — email: ${c.email} / password123  studentId: ${c.studentId}`);
+    console.log(`  👤 Customer: ${c.name} — email: ${c.email} / ${CUSTOMER_PASSWORD}  studentId: ${c.studentId}`);
   }
 
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('✅ SEED COMPLETE\n');
-  console.log('🔑 SUPER ADMIN: superadmin / super123');
+  console.log('✅ SEED COMPLETE — SAVE THESE NOW, THEY ARE NOT SHOWN AGAIN\n');
+  console.log(`🔑 SUPER ADMIN: superadmin / ${SUPERADMIN_PASSWORD}`);
   console.log('   Login at: /admin/superadmin\n');
-  console.log('🏪 RESTAURANT LOGINS (all password: admin123)');
+  console.log(`🏪 RESTAURANT LOGINS (all password: ${RESTAURANT_PASSWORD})`);
   console.log('   Each restaurant owner logs in with their EMAIL\n');
   console.log('   Use /restaurant/login to sign in or /restaurant/register to create a new one\n');
-  console.log('👤 DEMO CUSTOMERS (password: password123)');
+  console.log(`👤 DEMO CUSTOMERS (password: ${CUSTOMER_PASSWORD})`);
   console.log('   alice@school.ac.rw  or  STU001');
   console.log('   bob@school.ac.rw    or  STU002');
   console.log('   — OR order as a Guest (no account needed)');

@@ -42,25 +42,13 @@ npm run dev
 
 ## 🔑 Credentials
 
-### Super Admin
-- URL: `/superadmin`
-- Username: `superadmin` · Password: `super123`
+Seed passwords are no longer hardcoded or published here. Running `node src/prisma/seed.js` generates a random password for each account tier (super admin, restaurant owners, demo customers) and prints them once to the console — save them from that output. To set your own instead, export `SEED_SUPERADMIN_PASSWORD`, `SEED_RESTAURANT_PASSWORD`, and `SEED_CUSTOMER_PASSWORD` before running the seed script.
 
-### Demo Restaurant Owners (all password: `admin123`)
-| Restaurant | Email |
-|-----------|-------|
-| 🍲 Mama Africa Kitchen | amina@mamaafrica.rw |
-| 🍔 The Burger Spot | james@burgerspot.rw |
-| 🥗 Green Bowl | sophie@greenbowl.rw |
-| 🍕 Pizza Palace | marco@pizzapalace.rw |
-| 🍜 Dragon Wok | lin@dragonwok.rw |
-| ☕ Café Bonne Journée | celine@cafebj.rw |
-| 🍛 Spice Route | raj@spiceroute.rw |
-
-### Demo Customers (password: `password123`)
-- alice@school.ac.rw or STU001
-- bob@school.ac.rw or STU002
-- **Or order as a Guest — no account needed**
+### Accounts created by the seed script
+- **Super Admin** — username `superadmin`, login at `/superadmin`
+- **Restaurant owners** (one shared password across all demo restaurants) — amina@mamaafrica.rw, james@burgerspot.rw, sophie@greenbowl.rw, marco@pizzapalace.rw, lin@dragonwok.rw, celine@cafebj.rw, raj@spiceroute.rw
+- **Demo customers** (one shared password) — alice@school.ac.rw / STU001, bob@school.ac.rw / STU002
+- Or order as a **Guest** — no account needed
 
 ---
 
