@@ -90,7 +90,7 @@ export default function AdminLayout({ children, newOrderCount = 0 }) {
   )
 
   return (
-    <div className="min-h-screen bg-ink-50 flex">
+    <div data-admin="true" className="min-h-screen bg-ink-50 flex">
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-56 gradient-dark flex-col min-h-screen shrink-0 border-r border-white/5">
         <SidebarContent />

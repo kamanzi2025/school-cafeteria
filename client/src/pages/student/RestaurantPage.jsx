@@ -50,14 +50,14 @@ export default function RestaurantPage() {
   }) || []
 
   if (loading) return (
-    <div className="min-h-screen bg-ink-50 flex items-center justify-center">
-      <div className="text-center animate-pulse"><div className="text-5xl mb-3">🍽️</div><p className="text-ink-400">Loading menu…</p></div>
+    <div className="min-h-screen bg-alu-bg flex items-center justify-center">
+      <div className="text-center animate-pulse"><div className="text-5xl mb-3">🍽️</div><p className="text-alu-muted">Loading menu…</p></div>
     </div>
   )
   if (!restaurant) return null
 
   return (
-    <div className="min-h-screen bg-ink-50">
+    <div className="min-h-screen bg-alu-bg">
       {/* Hero */}
       <div className="relative text-white" style={{ background: `linear-gradient(160deg, ${restaurant.coverColor}dd, ${restaurant.coverColor}99)` }}>
         <div className="absolute inset-0 stripe-pattern opacity-30" />
@@ -101,23 +101,23 @@ export default function RestaurantPage() {
 
       {/* Notice banner */}
       {restaurant.notice && (
-        <div className="bg-amber-50 border-b border-amber-200 page-container py-2.5">
-          <p className="text-amber-700 text-sm flex items-center gap-2"><AlertCircle size={14} className="shrink-0" />{restaurant.notice}</p>
+        <div className="bg-amber-900/20 border-b border-amber-500/30 page-container py-2.5">
+          <p className="text-amber-300 text-sm flex items-center gap-2"><AlertCircle size={14} className="shrink-0" />{restaurant.notice}</p>
         </div>
       )}
 
       {/* Closed banner */}
       {!restaurant.isOpen && (
-        <div className="bg-red-50 border-b border-red-100 page-container py-3">
-          <p className="text-red-600 font-semibold text-sm text-center">This restaurant is currently closed · Opens {restaurant.openTime}</p>
+        <div className="bg-red-900/20 border-b border-red-500/20 page-container py-3">
+          <p className="text-red-400 font-semibold text-sm text-center">This restaurant is currently closed · Opens {restaurant.openTime}</p>
         </div>
       )}
 
       {/* Featured strip */}
       {featuredItems.length > 0 && (
-        <div className="bg-white border-b border-ink-100">
+        <div className="bg-alu-surface border-b border-alu-border">
           <div className="page-container py-4">
-            <p className="text-xs font-bold text-ink-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <p className="text-xs font-bold text-alu-muted uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <Flame size={13} className="text-flame-500" /> Featured
             </p>
             <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
@@ -128,7 +128,7 @@ export default function RestaurantPage() {
                     style={{ background: `${restaurant.coverColor}18` }}>
                     {item.emoji}
                   </div>
-                  <p className="text-xs font-medium text-ink-700 text-center leading-tight line-clamp-2">{item.name}</p>
+                  <p className="text-xs font-medium text-alu-cream text-center leading-tight line-clamp-2">{item.name}</p>
                   <p className="text-xs font-bold text-flame-500">{item.price.toLocaleString()}</p>
                 </button>
               ))}
@@ -137,13 +137,13 @@ export default function RestaurantPage() {
         </div>
       )}
 
-      {/* Category tabs + search */}
-      <div className="sticky top-0 z-20 bg-white border-b border-ink-100 shadow-sm">
+      {/* Category tabs */}
+      <div className="sticky top-0 z-20 bg-alu-surface border-b border-alu-border">
         <div className="page-container">
           <div className="flex gap-0 overflow-x-auto scrollbar-hide">
             {categories.map(c => (
               <button key={c} onClick={() => setActiveCategory(c)}
-                className={`whitespace-nowrap px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${activeCategory === c ? 'border-flame-500 text-flame-600' : 'border-transparent text-ink-400 hover:text-ink-700'}`}>
+                className={`whitespace-nowrap px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${activeCategory === c ? 'border-flame-500 text-flame-600' : 'border-transparent text-alu-muted hover:text-alu-cream'}`}>
                 {c}
               </button>
             ))}
@@ -155,7 +155,7 @@ export default function RestaurantPage() {
       <div className="page-container py-4 pb-24">
         {/* Search within menu */}
         <div className="relative mb-4">
-          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-alu-muted" />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search this menu…" className="input pl-9 py-2 text-sm" />
         </div>
 
@@ -167,22 +167,22 @@ export default function RestaurantPage() {
               <div key={item.id} className={`card flex gap-4 p-4 transition-opacity ${!item.isAvailable ? 'opacity-50' : ''}`}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start gap-2 flex-wrap mb-0.5">
-                    <h3 className="font-semibold text-ink-900 text-sm">{item.name}</h3>
+                    <h3 className="font-semibold text-alu-cream text-sm">{item.name}</h3>
                     {item.isFeatured && <span className="badge bg-flame-100 text-flame-600 text-[10px]">★ Featured</span>}
                     {item.isPopular && <span className="badge bg-purple-100 text-purple-600 text-[10px]">🔥 Popular</span>}
                     {item.isVegan && <span className="tag-vegan text-[10px]">Vegan</span>}
                     {!item.isVegan && item.isVeg && <span className="tag-veg text-[10px]">Veg</span>}
                     {item.isSpicy && <span className="tag-spicy text-[10px]">Spicy 🌶</span>}
                   </div>
-                  {item.description && <p className="text-xs text-ink-400 mt-0.5 line-clamp-2">{item.description}</p>}
+                  {item.description && <p className="text-xs text-alu-muted mt-0.5 line-clamp-2">{item.description}</p>}
                   <div className="flex items-center gap-3 mt-2 flex-wrap">
                     <span className="font-bold text-flame-500">{item.price.toLocaleString()} RWF</span>
-                    {item.originalPrice && <span className="text-xs text-ink-400 line-through">{item.originalPrice.toLocaleString()}</span>}
-                    {item.calories && <span className="text-xs text-ink-400 flex items-center gap-0.5"><Flame size={10} />{item.calories} cal</span>}
-                    <span className="text-xs text-ink-400 flex items-center gap-0.5"><Clock size={10} />{item.prepTime} min</span>
+                    {item.originalPrice && <span className="text-xs text-alu-muted line-through">{item.originalPrice.toLocaleString()}</span>}
+                    {item.calories && <span className="text-xs text-alu-muted flex items-center gap-0.5"><Flame size={10} />{item.calories} cal</span>}
+                    <span className="text-xs text-alu-muted flex items-center gap-0.5"><Clock size={10} />{item.prepTime} min</span>
                   </div>
                   {item.allergens && JSON.parse(item.allergens).length > 0 && (
-                    <p className="text-[10px] text-amber-600 mt-1 flex items-center gap-1">
+                    <p className="text-[10px] text-amber-400 mt-1 flex items-center gap-1">
                       <AlertCircle size={10} />Contains: {JSON.parse(item.allergens).join(', ')}
                     </p>
                   )}
@@ -197,10 +197,10 @@ export default function RestaurantPage() {
                   {canOrder ? (
                     qty > 0 ? (
                       <div className="flex items-center gap-2">
-                        <button onClick={() => setQty(item.id, qty - 1)} className="w-7 h-7 rounded-lg border border-ink-200 flex items-center justify-center text-ink-600 hover:bg-red-50 hover:border-red-200 transition">
+                        <button onClick={() => setQty(item.id, qty - 1)} className="w-7 h-7 rounded-lg border border-alu-border flex items-center justify-center text-alu-muted hover:border-red-500/40 hover:text-red-400 transition">
                           <Minus size={12} />
                         </button>
-                        <span className="font-bold text-sm text-ink-900 w-4 text-center">{qty}</span>
+                        <span className="font-bold text-sm text-alu-cream w-4 text-center">{qty}</span>
                         <button onClick={() => handleAdd(item)} className="w-7 h-7 rounded-lg bg-flame-500 flex items-center justify-center text-white hover:bg-flame-600 transition">
                           <Plus size={12} />
                         </button>
@@ -211,7 +211,7 @@ export default function RestaurantPage() {
                       </button>
                     )
                   ) : (
-                    <span className="text-[10px] text-ink-400 text-center">{!item.isAvailable ? '86\'d' : 'Closed'}</span>
+                    <span className="text-[10px] text-alu-muted text-center">{!item.isAvailable ? '86\'d' : 'Closed'}</span>
                   )}
                 </div>
               </div>
@@ -219,7 +219,7 @@ export default function RestaurantPage() {
           })}
           {displayItems.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-ink-300 text-sm">No items match your search</p>
+              <p className="text-alu-muted text-sm">No items match your search</p>
             </div>
           )}
         </div>

@@ -49,3 +49,15 @@
   .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
   .scrollbar-hide::-webkit-scrollbar { display:none; }
 }
+
+@layer utilities {
+  /* Restaurant admin — force light theme on shared dark classes */
+  [data-admin] .card { @apply bg-white border-ink-200; }
+  [data-admin] .card-hover { @apply bg-white border-ink-200 hover:border-ink-300; }
+  [data-admin] .input { @apply bg-white border-ink-200 text-ink-900 placeholder-ink-400 focus:ring-ink-400/20 focus:border-ink-500; }
+  [data-admin] .label { @apply text-ink-500; }
+  [data-admin] .btn-secondary { @apply bg-white text-ink-700 border-ink-200 hover:bg-ink-50; }
+  [data-admin] .btn-ghost { @apply text-ink-500 hover:bg-ink-100 hover:text-ink-700; }
+  [data-admin] .btn-danger { @apply bg-red-50 text-red-600 border-red-200 hover:bg-red-100; }
+  [data-admin] .skeleton { @apply from-ink-100 via-ink-50 to-ink-100; }
+}
